@@ -1,6 +1,5 @@
 package model;
 
-import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.val;
 import utils.Utils;
@@ -11,12 +10,8 @@ public class GameObject {
     protected GameObject[][] map;
     protected Point location;
 
-    @Getter
-    private Image image;
-
-    public GameObject(GameObject[][] map, Image image, Point location) {
+    public GameObject(GameObject[][] map, Point location) {
         this.map = map;
-        this.image = image;
         if (map[location.y][location.x] != this)
             throw new ExceptionInInitializerError("invalid location");
         val height = map.length;
@@ -28,7 +23,7 @@ public class GameObject {
     }
 
     @SneakyThrows
-    protected void Swap(GameObject other) {
+    protected void swap(GameObject other) {
         if (map != other.map)
             throw new IllegalArgumentException("objects are on different maps");
 

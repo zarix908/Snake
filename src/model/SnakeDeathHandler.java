@@ -1,5 +1,5 @@
 package model;
 
-public interface snakeDeathHandler {
+public interface SnakeDeathHandler {
     void onDeath(int length);
 }
