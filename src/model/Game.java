@@ -24,7 +24,7 @@ public class Game {
 
     public Game(ArrayList<Level> levels, int difficulty) {
         this.levels = levels;
-        if(difficulty <= 0)
+        if(difficulty < 1)
             throw  new ExceptionInInitializerError();
         this.difficulty = difficulty;
         currentLevel = levels.get(0);
@@ -45,12 +45,12 @@ public class Game {
     }
 
     private void switchToNextLevel(){
-        currentLevelNumber++;
-        if(currentLevelNumber >= levels.size()){
-            notifyEndGame(currentLevelNumber, currentLevel.getSnake().getLength(), false);
+        if(currentLevelNumber + 1 >= levels.size()){
+            notifyEndGame(currentLevelNumber + 1, currentLevel.getSnake().getLength(), false);
             return;
         }
 
+        currentLevelNumber++;
         currentLevel = levels.get(currentLevelNumber);
         stopGame();
         startGame();

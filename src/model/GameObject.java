@@ -12,8 +12,6 @@ public class GameObject {
 
     public GameObject(GameObject[][] map, Point location) {
         this.map = map;
-        if (map[location.y][location.x] != this)
-            throw new ExceptionInInitializerError("invalid location");
         val height = map.length;
         for(val row : map)
             if(row.length != height)

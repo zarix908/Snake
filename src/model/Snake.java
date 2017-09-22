@@ -62,9 +62,10 @@ public class Snake extends GameObject {
     }
 
     private void moveToApple(GameObject apple){
-        map[apple.location.y][apple.location.x] = this;
-        val newBodyBlock = new SnakeBody(map, location);
-        map[location.y][location.x] = newBodyBlock;
+        val oldLocation = location;
+        swap(apple);
+        val newBodyBlock = new SnakeBody(map, oldLocation);
+        map[oldLocation.y][oldLocation.x] = newBodyBlock;
         body.add(newBodyBlock);
     }
 

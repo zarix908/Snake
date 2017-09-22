@@ -28,7 +28,7 @@ public class SnakeMoveTimerTask extends TimerTask {
     @Override
     public void run() {
         snake.Move();
-        if(snake.getLength() >= levelEndTreshold)
+        if(snake.getLength() > levelEndTreshold)
             notyfyLevelEnd();
     }
 }
