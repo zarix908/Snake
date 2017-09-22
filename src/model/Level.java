@@ -4,8 +4,10 @@ import lombok.Getter;
 
 public class Level {
     @Getter private GameObject[][] map;
+    @Getter private Snake snake;
 
-    public Level(int height, int width){
-        map = new GameObject[height][width];
+    public Level(GameObject[][] map, Snake snake){
+        this.map = map;
+        this.snake = snake;
     }
 }
