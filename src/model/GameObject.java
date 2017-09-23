@@ -28,12 +28,18 @@ public class GameObject {
 
     }
 
-    protected GameObject getNeighbor(Direction direction){
+    protected GameObject getNeighbor(Direction direction) {
         val destinationX = Utils.getXOffsets().get(direction) + location.x;
         val destinationY = Utils.getYOffsets().get(direction) + location.y;
 
-        if(destinationX < 0 || destinationY < 0 || destinationY >= map.getHeight() || destinationX >= map.getWidth())
+        if (destinationX < 0 || destinationY < 0 || destinationY >= map.getHeight() || destinationX >= map.getWidth())
             return null;
         return map.get(destinationX, destinationY);
+    }
+
+    protected boolean isNeighboor(GameObject other) {
+        val dx = location.x - other.location.x;
+        val dy = location.y - other.location.y;
+        return dx * dx + dy * dy == 1;
     }
 }

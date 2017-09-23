@@ -6,7 +6,6 @@ import lombok.val;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public final class LevelGenerator {
     private static ArrayList<String> levels = new ArrayList<>();
@@ -16,10 +15,10 @@ public final class LevelGenerator {
                 "xxxxxxxxxxxxxxxxx\n" +
                 "x.....x.........x\n" +
                 "x.....x.........x\n" +
-                "x.@...xxxx..x...x\n" +
-                "x.@@@.......x...x\n" +
-                "x.@...x.....x...x\n" +
+                "x.....xxxx..x...x\n" +
+                "x...........x...x\n" +
                 "x.s...x.....x...x\n" +
+                "x.o...x.....x...x\n" +
                 "xxxxxxxxxxxxxxxxx"
         );
         levels.add(
@@ -29,7 +28,7 @@ public final class LevelGenerator {
                 "x...............x\n" +
                 "x..xxxxxxxxxxx..x\n" +
                 "x.s...x...x.....x\n" +
-                "x...............x\n" +
+                "x.o.............x\n" +
                 "xxxxxxxxxxxxxxxxx"
         );
         levels.add(
@@ -39,7 +38,7 @@ public final class LevelGenerator {
                 "x...............x\n" +
                 "x....xxxxxxxxxxxx\n" +
                 "x.s.............x\n" +
-                "xx.....x........x\n" +
+                "xxo....x........x\n" +
                 ".xxxxxxxxxxxxxxxx"
         );
     }
@@ -49,6 +48,8 @@ public final class LevelGenerator {
         val lines = level.split("\n");
         val width = lines[0].length();
         val result = new Map(lines.length, width);
+        int snakeHeadCount = 0;
+        int snakeBodyCount = 0;
 
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].length() != width)
@@ -60,14 +61,20 @@ public final class LevelGenerator {
                     result.add(j, i, new Space(result, new Point(j, i)));
                 else if (currentChar == 'x')
                     result.add(j, i, new Wall(result, new Point(j, i)));
-                else if (currentChar == 's')
+                else if (currentChar == 's') {
                     result.add(j, i, new Snake(result, new Point(j, i)));
-                else if (currentChar == '@')
+                    snakeHeadCount++;
+                } else if (currentChar == '@')
                     result.add(j, i, new Apple(result, new Point(j, i)));
-                else
+                else if (currentChar == 'o') {
+                    result.add(j, i, new SnakeBody(result, new Point(j, i)));
+                    snakeBodyCount++;
+                } else
                     throw new IllegalArgumentException();
             }
         }
+        if (snakeBodyCount != 1 || snakeHeadCount != 1)
+            throw new IllegalArgumentException();
         return result;
     }
 
@@ -76,6 +83,12 @@ public final class LevelGenerator {
         for (int i = 0; i < levels.size(); i++) {
             val map = parseLevel(levels.get(i));
             val snake = (Snake) map.findFirst(Snake.class);
+            val snakeBody = (SnakeBody) map.findFirst(SnakeBody.class);
+
+            if(!snake.isNeighboor(snakeBody))
+                throw new IllegalArgumentException();
+
+            snake.getBody().add(snakeBody);
 
             result.add(new Level(map, snake, 3 + 2 * i));
         }
