@@ -3,7 +3,7 @@ package model;
 import java.awt.*;
 
 public class Apple extends GameObject {
-    public Apple(GameObject[][] map, Point location) {
+    public Apple(Map map, Point location) {
         super(map, location);
     }
 }

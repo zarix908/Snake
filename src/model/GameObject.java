@@ -1,6 +1,5 @@
 package model;
 
-import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.val;
 import utils.Utils;
@@ -8,16 +7,11 @@ import utils.Utils;
 import java.awt.*;
 
 public class GameObject {
-    protected GameObject[][] map;
+    protected Map map;
     protected Point location;
 
-    public GameObject(GameObject[][] map, Point location) {
+    public GameObject(Map map, Point location) {
         this.map = map;
-        val width = map[0].length;
-        for(val row : map)
-            if(row.length != width)
-                throw new ExceptionInInitializerError("map must be square");
-
         this.location = location;
     }
 
@@ -26,19 +20,20 @@ public class GameObject {
         if (map != other.map)
             throw new IllegalArgumentException("objects are on different maps");
 
-        map[location.y][location.x] = other;
-        map[other.location.y][other.location.x] = this;
         val otherLocation = other.location;
         other.location = location;
         location = otherLocation;
+        map.add(other.location, other);
+        map.add(location, this);
+
     }
 
     protected GameObject getNeighboor(Direction direction){
         val destinationX = Utils.getXOffsets().get(direction) + location.x;
         val destinationY = Utils.getYOffsets().get(direction) + location.y;
 
-        if(destinationX < 0 || destinationY < 0 || destinationY >= map.length || destinationX >= map[0].length)
+        if(destinationX < 0 || destinationY < 0 || destinationY >= map.getHeight() || destinationX >= map.getWidth())
             return null;
-        return map[destinationY][destinationX];
+        return map.get(destinationX, destinationY);
     }
 }

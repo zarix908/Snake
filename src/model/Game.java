@@ -35,14 +35,14 @@ public class Game {
     }
 
     private void addAppleToMap() {
-        val freeFields = Arrays.stream(currentLevel.getMap())
-                .flatMap(Arrays::stream)
+        val map = currentLevel.getMap();
+        val freeFields = map.toStream()
                 .filter(e -> e.getClass() == Space.class)
                 .toArray();
         val randomIndex = new Random().nextInt(freeFields.length);
         val selectedObject = (GameObject) freeFields[randomIndex];
         val location = selectedObject.location;
-        currentLevel.getMap()[location.y][location.x] = new Apple(currentLevel.getMap(), location);
+        map.add(location.x, location.y, new Apple(map, location));
     }
 
     public void startGame() {

@@ -34,7 +34,7 @@ public class Snake extends GameObject {
             handler.onEatApple();
     }
 
-    public Snake(GameObject[][] map, Point location) {
+    public Snake(model.Map map, Point location) {
         super(map, location);
 
         movementHandlers.put(Wall.class, this::moveToWall);
@@ -74,7 +74,7 @@ public class Snake extends GameObject {
         val oldLocation = location;
         swap(apple);
         val newBodyBlock = new SnakeBody(map, oldLocation);
-        map[oldLocation.y][oldLocation.x] = newBodyBlock;
+        map.add(oldLocation.x, oldLocation.y, newBodyBlock);
         body.add(newBodyBlock);
         notifyEatApple();
     }

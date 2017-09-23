@@ -45,10 +45,10 @@ public final class LevelGenerator {
     }
 
     @SneakyThrows
-    private static GameObject[][] parseLevel(String level) {
+    private static Map parseLevel(String level) {
         val lines = level.split("\n");
         val width = lines[0].length();
-        val result = new GameObject[lines.length][width];
+        val result = new Map(lines.length, width);
 
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].length() != width)
@@ -57,11 +57,13 @@ public final class LevelGenerator {
             for (int j = 0; j < lines[i].length(); j++) {
                 val currentChar = lines[i].charAt(j);
                 if (currentChar == '.')
-                    result[i][j] = new Space(result, new Point(j, i));
+                    result.add(j, i, new Space(result, new Point(j, i)));
                 else if (currentChar == 'x')
-                    result[i][j] = new Wall(result, new Point(j, i));
+                    result.add(j, i, new Wall(result, new Point(j, i)));
                 else if (currentChar == 's')
-                    result[i][j] = new Snake(result, new Point(j, i));
+                    result.add(j, i, new Snake(result, new Point(j, i)));
+                else if (currentChar == '@')
+                    result.add(j, i, new Apple(result, new Point(j, i)));
                 else
                     throw new IllegalArgumentException();
             }
@@ -73,11 +75,8 @@ public final class LevelGenerator {
         val result = new ArrayList<Level>();
         for (int i = 0; i < levels.size(); i++) {
             val map = parseLevel(levels.get(i));
-            val snake = (Snake) Arrays.stream(map)
-                    .flatMap(Arrays::stream)
-                    .filter(e -> e.getClass() == Snake.class)
-                    .findFirst()
-                    .orElseThrow(IllegalArgumentException::new);
+            val snake = (Snake) map.findFirst(Snake.class);
+
             result.add(new Level(map, snake, 3 + 2 * i));
         }
         return result;
