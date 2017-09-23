@@ -13,16 +13,25 @@ import java.util.function.Consumer;
 public class Snake extends GameObject {
 
     private Direction direction = Direction.UP;
-    private ArrayList<SnakeDeathHandler> handlers = new ArrayList<>();
+    private ArrayList<SnakeDeathHandler> deathHandlers = new ArrayList<>();
+    private ArrayList<EatAppleEventHandler> eatAppleHandlers = new ArrayList<>();
     private LinkedList<SnakeBody> body = new LinkedList<>();
     private final Map<Class, Consumer<GameObject>> movementHandlers = new HashMap<>();
 
     public void addDeathHandler(SnakeDeathHandler handler) {
-        handlers.add(handler);
+        deathHandlers.add(handler);
+    }
+    public void addEatAppleHandler(EatAppleEventHandler handler) {
+        eatAppleHandlers.add(handler);
     }
 
-    private void notyfyDeath() {
-        handlers.forEach(e -> e.onDeath(getLength()));
+    private void notifyDeath() {
+        for(val handler : deathHandlers)
+            handler.onDeath(getLength());
+    }
+    private void notifyEatApple() {
+        for(val handler : eatAppleHandlers)
+            handler.onEatApple();
     }
 
     public Snake(GameObject[][] map, Point location) {
@@ -42,7 +51,7 @@ public class Snake extends GameObject {
     public void Move() {
         val destination = getNeighboor(direction);
         if (destination == null) {
-            notyfyDeath();
+            notifyDeath();
             return;
         }
 
@@ -54,11 +63,11 @@ public class Snake extends GameObject {
     }
 
     private void moveToWall(GameObject wall) {
-        notyfyDeath();
+        notifyDeath();
     }
 
     private void moveToSnakeBody(GameObject body) {
-        notyfyDeath();
+        notifyDeath();
     }
 
     private void moveToApple(GameObject apple){
@@ -67,6 +76,7 @@ public class Snake extends GameObject {
         val newBodyBlock = new SnakeBody(map, oldLocation);
         map[oldLocation.y][oldLocation.x] = newBodyBlock;
         body.add(newBodyBlock);
+        notifyEatApple();
     }
 
     private void moveToSpace(GameObject space){

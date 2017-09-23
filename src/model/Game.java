@@ -1,13 +1,18 @@
 package model;
 
+import lombok.Getter;
 import lombok.val;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.Timer;
 
 public class Game {
-    private final ArrayList<Level> levels;
+    private final ArrayList<Level> levels = LevelGenerator.getLevels();
     private int difficulty;
+    @Getter
     private Level currentLevel;
     private int currentLevelNumber = 0;
     private final Timer timer = new Timer();
@@ -22,30 +27,41 @@ public class Game {
             handler.onGameEnd(levelNumber, snakeLength, snakeIsDead);
     }
 
-    public Game(ArrayList<Level> levels, int difficulty) {
-        this.levels = levels;
-        if(difficulty < 1)
-            throw  new ExceptionInInitializerError();
+    public Game(int difficulty) {
+        if (difficulty < 1)
+            throw new ExceptionInInitializerError();
         this.difficulty = difficulty;
         currentLevel = levels.get(0);
     }
 
+    private void addAppleToMap() {
+        val freeFields = Arrays.stream(currentLevel.getMap())
+                .flatMap(Arrays::stream)
+                .filter(e -> e.getClass() == Space.class)
+                .toArray();
+        val randomIndex = new Random().nextInt(freeFields.length);
+        val selectedObject = (GameObject) freeFields[randomIndex];
+        val location = selectedObject.location;
+        currentLevel.getMap()[location.y][location.x] = new Apple(currentLevel.getMap(), location);
+    }
 
     public void startGame() {
+        addAppleToMap();
         currentLevel.getSnake()
                 .addDeathHandler(l -> notifyEndGame(currentLevelNumber + 1, l, true));
+        currentLevel.getSnake().addEatAppleHandler(this::addAppleToMap);
         val task = new SnakeMoveTimerTask(currentLevel.getSnake(), currentLevel.getAppleCount());
         task.addLevelEndHandler(this::switchToNextLevel);
         timer.schedule(task, 0, 1000 / difficulty);
     }
 
-    private void stopGame(){
+    private void stopGame() {
         timer.cancel();
         timer.purge();
     }
 
-    private void switchToNextLevel(){
-        if(currentLevelNumber + 1 >= levels.size()){
+    private void switchToNextLevel() {
+        if (currentLevelNumber + 1 >= levels.size()) {
             notifyEndGame(currentLevelNumber + 1, currentLevel.getSnake().getLength(), false);
             return;
         }

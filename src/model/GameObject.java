@@ -1,5 +1,6 @@
 package model;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.val;
 import utils.Utils;
@@ -12,9 +13,9 @@ public class GameObject {
 
     public GameObject(GameObject[][] map, Point location) {
         this.map = map;
-        val height = map.length;
+        val width = map[0].length;
         for(val row : map)
-            if(row.length != height)
+            if(row.length != width)
                 throw new ExceptionInInitializerError("map must be square");
 
         this.location = location;

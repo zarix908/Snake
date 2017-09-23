@@ -1,39 +1,88 @@
 package model;
 
+import lombok.SneakyThrows;
 import lombok.val;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.lang.reflect.Array;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 
 public final class LevelGenerator {
     private static ArrayList<String> levels = new ArrayList<>();
 
     static {
         levels.add(
-                "xxxxxxxxxxx\n" +
-                "x.........x\n" +
-                "x.........x\n" +
-                "x.........x\n" +
-                "x.........x\n" +
-                "x.s.......x\n" +
-                "x.........x\n" +
-                "xxxxxxxxxxx\n"
+                "xxxxxxxxxxxxxxxxx\n" +
+                "x.....x.........x\n" +
+                "x.....x.........x\n" +
+                "x.....xxxx..x...x\n" +
+                "x...........x...x\n" +
+                "x.s...x.....x...x\n" +
+                "x.....x.....x...x\n" +
+                "xxxxxxxxxxxxxxxxx"
+        );
+        levels.add(
+                "xxxxxxxxxxxxxxxxx\n" +
+                "x...............x\n" +
+                "x..xxxx...xxxx..x\n" +
+                "x...............x\n" +
+                "x..xxxxxxxxxxx..x\n" +
+                "x.s...x...x.....x\n" +
+                "x...............x\n" +
+                "xxxxxxxxxxxxxxxxx"
+        );
+        levels.add(
+                "xxxxxxxxxxxxxxxxx\n" +
+                "x...............x\n" +
+                "x.xxxxxxxx......x\n" +
+                "x...............x\n" +
+                "x....xxxxxxxxxxxx\n" +
+                "x.s.............x\n" +
+                "xx.....x........x\n" +
+                ".xxxxxxxxxxxxxxxx"
         );
     }
 
-    private GameObject[][] parseLevel(String level){
-        throw new NotImplementedException();
+    @SneakyThrows
+    private static GameObject[][] parseLevel(String level) {
+        val lines = level.split("\n");
+        val width = lines[0].length();
+        val result = new GameObject[lines.length][width];
+
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].length() != width)
+                throw new InstantiationException();
+
+            for (int j = 0; j < lines[i].length(); j++) {
+                val currentChar = lines[i].charAt(j);
+                if (currentChar == '.')
+                    result[i][j] = new Space(result, new Point(j, i));
+                else if (currentChar == 'x')
+                    result[i][j] = new Wall(result, new Point(j, i));
+                else if (currentChar == 's')
+                    result[i][j] = new Snake(result, new Point(j, i));
+                else
+                    throw new IllegalArgumentException();
+            }
+        }
+        return result;
     }
 
-    public LinkedList<Level> getLevels(){
-        throw new NotImplementedException();
+    public static ArrayList<Level> getLevels() {
+        val result = new ArrayList<Level>();
+        for (int i = 0; i < levels.size(); i++) {
+            val map = parseLevel(levels.get(i));
+            val snake = (Snake) Arrays.stream(map)
+                    .flatMap(Arrays::stream)
+                    .filter(e -> e.getClass() == Snake.class)
+                    .findFirst()
+                    .orElseThrow(IllegalArgumentException::new);
+            result.add(new Level(map, snake, 3 + 2 * i));
+        }
+        return result;
     }
 
     private LevelGenerator() {
     }
-
-
 }
