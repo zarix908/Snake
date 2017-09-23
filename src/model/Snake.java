@@ -49,7 +49,7 @@ public class Snake extends GameObject {
     }
 
     public void Move() {
-        val destination = getNeighboor(direction);
+        val destination = getNeighbor(direction);
         if (destination == null) {
             notifyDeath();
             return;

@@ -28,7 +28,7 @@ public class GameObject {
 
     }
 
-    protected GameObject getNeighboor(Direction direction){
+    protected GameObject getNeighbor(Direction direction){
         val destinationX = Utils.getXOffsets().get(direction) + location.x;
         val destinationY = Utils.getYOffsets().get(direction) + location.y;
 

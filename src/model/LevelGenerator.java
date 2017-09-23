@@ -16,10 +16,10 @@ public final class LevelGenerator {
                 "xxxxxxxxxxxxxxxxx\n" +
                 "x.....x.........x\n" +
                 "x.....x.........x\n" +
-                "x.....xxxx..x...x\n" +
-                "x...........x...x\n" +
+                "x.@...xxxx..x...x\n" +
+                "x.@@@.......x...x\n" +
+                "x.@...x.....x...x\n" +
                 "x.s...x.....x...x\n" +
-                "x.....x.....x...x\n" +
                 "xxxxxxxxxxxxxxxxx"
         );
         levels.add(

@@ -3,19 +3,17 @@ package model;
 import lombok.Getter;
 import lombok.val;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 
 public class Game {
-    private final ArrayList<Level> levels = LevelGenerator.getLevels();
+    private final ArrayList<Level> levels;
     private int difficulty;
     @Getter
     private Level currentLevel;
     private int currentLevelNumber = 0;
-    private final Timer timer = new Timer();
+    private Timer timer = new Timer();
     private final ArrayList<GameEndEventHandler> endGameHandlers = new ArrayList<>();
 
     public void addEndGameHandler(GameEndEventHandler handler) {
@@ -27,11 +25,17 @@ public class Game {
             handler.onGameEnd(levelNumber, snakeLength, snakeIsDead);
     }
 
-    public Game(int difficulty) {
+    public Game(ArrayList<Level> levels, int difficulty) {
         if (difficulty < 1)
             throw new ExceptionInInitializerError();
         this.difficulty = difficulty;
+        this.levels = levels;
+        this.levels.forEach(this::subscribeToEvents);
         currentLevel = levels.get(0);
+    }
+
+    public Game(int difficulty) {
+        this(LevelGenerator.getLevels(), difficulty);
     }
 
     private void addAppleToMap() {
@@ -47,17 +51,20 @@ public class Game {
 
     public void startGame() {
         addAppleToMap();
-        currentLevel.getSnake()
-                .addDeathHandler(l -> notifyEndGame(currentLevelNumber + 1, l, true));
-        currentLevel.getSnake().addEatAppleHandler(this::addAppleToMap);
         val task = new SnakeMoveTimerTask(currentLevel.getSnake(), currentLevel.getAppleCount());
         task.addLevelEndHandler(this::switchToNextLevel);
         timer.schedule(task, 0, 1000 / difficulty);
     }
 
-    private void stopGame() {
+    public void stopGame() {
         timer.cancel();
-        timer.purge();
+        timer = new Timer();
+    }
+
+    private void subscribeToEvents(Level level) {
+        level.getSnake()
+                .addDeathHandler(l -> notifyEndGame(currentLevelNumber + 1, l, true));
+        level.getSnake().addEatAppleHandler(this::addAppleToMap);
     }
 
     private void switchToNextLevel() {
