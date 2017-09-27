@@ -5,12 +5,12 @@ import model.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.TimerTask;
 import java.util.Timer;
 
 
-public class View extends JFrame implements KeyListener, GameEndEventHandler{
-    private Game game;
+public class View extends JFrame implements KeyListener{
+    public Game game;
+    private Timer timer;
 
     public View(Game game){
         super("Snake");
@@ -22,16 +22,15 @@ public class View extends JFrame implements KeyListener, GameEndEventHandler{
         val map = game.getCurrentLevel().getMap();
         setBounds(100, 100, map.getWidth() * 50, map.getHeight() * 50);
 
-        val timer = new Timer();
-        timer.schedule(new UpdateViewTimerTask(this),0 , 50);
+        timer = new Timer();
+        timer.schedule(new UpdateViewTimerTask(this),0 , 500);
 
         val canvas = new DrawCanvas(game);
         this.add(canvas);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        game.addEndGameHandler(this);
-        game.startGame();
+        game.addEndGameHandler(this::onGameEnd);
     }
 
     @Override
@@ -54,16 +53,19 @@ public class View extends JFrame implements KeyListener, GameEndEventHandler{
     @Override
     public void keyReleased(KeyEvent e) {}
 
-    @Override
-    public void onGameEnd(int levelNumber, int snakeLength, boolean snakeIsDead) {
-        game.stopGame();
 
-        JOptionPane.showMessageDialog(new JPanel(), "Game over! Your score:\n" +
-                "level: " + String.valueOf(levelNumber) + "\n" +
-                "apples: " + String.valueOf(snakeLength - 2));
+    public void onGameEnd(int levelNumber, int snakeLength, boolean snakeIsDead) {
+        timer.cancel();
+
+        JOptionPane.showConfirmDialog(new JPanel(),
+                String.format("Game over!\n Your score:\n level: %d\n apples: %d",
+                levelNumber, snakeLength - 2));
 
         game.refreshGame();
-        game.startGame();
+
+
+        timer = new Timer();
+        timer.schedule(new UpdateViewTimerTask(this),0 , 500);
     }
 }
 
