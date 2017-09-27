@@ -5,15 +5,14 @@ import lombok.val;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
 
 public class Game {
     private final ArrayList<Level> levels;
+    @Getter
     private int difficulty;
     @Getter
     private Level currentLevel;
     private int currentLevelNumber = 0;
-    private Timer timer = new Timer();
     private final ArrayList<GameEndEventHandler> endGameHandlers = new ArrayList<>();
 
     public void addEndGameHandler(GameEndEventHandler handler) {
@@ -37,10 +36,17 @@ public class Game {
         this.levels = levels;
         this.levels.forEach(this::subscribeToEvents);
         currentLevel = levels.get(0);
+        addAppleToMap();
     }
 
     public Game(int difficulty) {
         this(LevelGenerator.getLevels(), difficulty);
+    }
+
+    public void makeGameIteration() {
+        currentLevel.getSnake().Move();
+        if(currentLevel.getSnake().getLength() > currentLevel.getAppleCount())
+            switchToNextLevel();
     }
 
     private void addAppleToMap() {
@@ -48,22 +54,16 @@ public class Game {
         val freeFields = map.toStream()
                 .filter(e -> e.getClass() == Space.class)
                 .toArray();
+
+        if(freeFields.length == 0){
+            switchToNextLevel();
+            return;
+        }
+
         val randomIndex = new Random().nextInt(freeFields.length);
         val selectedObject = (GameObject) freeFields[randomIndex];
         val location = selectedObject.location;
         map.add(location.x, location.y, new Apple(map, location));
-    }
-
-    public void startGame() {
-        addAppleToMap();
-        val task = new SnakeMoveTimerTask(currentLevel.getSnake(), currentLevel.getAppleCount());
-        task.addLevelEndHandler(this::switchToNextLevel);
-        timer.schedule(task, 0, 1000 / difficulty);
-    }
-
-    public void stopGame() {
-        timer.cancel();
-        timer = new Timer();
     }
 
     private void subscribeToEvents(Level level) {
@@ -80,7 +80,5 @@ public class Game {
 
         currentLevelNumber++;
         currentLevel = levels.get(currentLevelNumber);
-        stopGame();
-        startGame();
     }
 }

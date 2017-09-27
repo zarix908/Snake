@@ -15,7 +15,6 @@ public class GameObject {
         this.location = location;
     }
 
-    @SneakyThrows
     protected void swap(GameObject other) {
         if (map != other.map)
             throw new IllegalArgumentException("objects are on different maps");
