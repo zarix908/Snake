@@ -4,6 +4,7 @@ package view;
 import lombok.val;
 import model.Direction;
 import model.Game;
+import utils.Config;
 import utils.Utils;
 
 import javax.swing.*;
@@ -21,16 +22,17 @@ public class DrawCanvas extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
 
-         val map = game.getCurrentLevel().getMap();
-        super.paintComponent(g);     // paint parent's background
-        setBackground(Color.BLACK);  // set background color for this JPanel
+        val map = game.getCurrentLevel().getMap();
+        val size = Config.GAME_OBJECT_SIZE;
 
-        for(int x=0; x < map.getWidth(); x++)
-            for (int y=0; y < map.getHeight(); y++) {
-                val unit = map.get(x, y);
-             //   g.drawImage(
-                g.setColor(Utils.getUnitsImages().get(unit.getClass()));
-                g.fillRect(x * 50, y * 50, 50, 50);
+        super.paintComponent(g);
+        setBackground(Color.BLACK);
+
+        for (int x = 0; x < map.getWidth(); x++)
+            for (int y = 0; y < map.getHeight(); y++) {
+                val gameObject = map.get(x, y);
+                g.setColor(Utils.getUnitsImages().get(gameObject.getClass()));
+                g.fillRect(x * size, y * size, size, size);
             }
     }
 }

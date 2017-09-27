@@ -13,6 +13,12 @@ public final class LevelGenerator {
     static {
         levels.add(
                 "xxxxxxxxxxxxxxxxx\n" +
+                        "x...............x\n" +
+                        "x...............x\n" +
+                        "x...............x\n" +
+                        "x...............x\n" +
+                        "x...............x\n" +
+                        "x...............x\n" +
                         "x.....x.........x\n" +
                         "x.....x.........x\n" +
                         "x.....xxxx..x...x\n" +

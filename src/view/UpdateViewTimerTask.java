@@ -12,7 +12,7 @@ class UpdateViewTimerTask extends TimerTask {
 
     @Override
     public void run() {
-        view.game.makeGameIteration();
+        view.getGame().makeGameIteration();
         view.repaint();
     }
 }

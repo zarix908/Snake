@@ -27,6 +27,7 @@ public class Game {
     public void refreshGame() {
         currentLevel = LevelGenerator.getLevel(currentLevelNumber);
         subscribeToEvents(currentLevel);
+        addAppleToMap();
     }
 
     public Game(ArrayList<Level> levels, int difficulty) {
@@ -45,7 +46,7 @@ public class Game {
 
     public void makeGameIteration() {
         currentLevel.getSnake().Move();
-        if(currentLevel.getSnake().getLength() > currentLevel.getAppleCount())
+        if (currentLevel.getSnake().getLength() > currentLevel.getAppleCount())
             switchToNextLevel();
     }
 
@@ -55,7 +56,7 @@ public class Game {
                 .filter(e -> e.getClass() == Space.class)
                 .toArray();
 
-        if(freeFields.length == 0){
+        if (freeFields.length == 0) {
             switchToNextLevel();
             return;
         }
@@ -80,5 +81,6 @@ public class Game {
 
         currentLevelNumber++;
         currentLevel = levels.get(currentLevelNumber);
+        addAppleToMap();
     }
 }

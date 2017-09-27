@@ -1,6 +1,5 @@
 package model;
 
-import lombok.SneakyThrows;
 import lombok.val;
 import utils.Utils;
 
@@ -40,5 +39,10 @@ public class GameObject {
         val dx = location.x - other.location.x;
         val dy = location.y - other.location.y;
         return dx * dx + dy * dy == 1;
+    }
+
+    @Override
+    public String toString(){
+        return getClass().toString() + "(" + location.x + "," + location.y + ")";
     }
 }

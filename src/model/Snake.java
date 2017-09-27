@@ -45,7 +45,7 @@ public class Snake extends GameObject {
         movementHandlers.put(Space.class, this::moveToSpace);
     }
 
-    public void rotateAndMove(Direction direction) {
+    public void rotate(Direction direction) {
         if (direction == this.direction || direction == Utils.getOppositeDirections().get(this.direction))
             return;
         this.direction = direction;
