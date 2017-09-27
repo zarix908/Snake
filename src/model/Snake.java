@@ -49,7 +49,6 @@ public class Snake extends GameObject {
         if (direction == this.direction || direction == Utils.getOppositeDirections().get(this.direction))
             return;
         this.direction = direction;
-        Move();
     }
 
     public void Move() {

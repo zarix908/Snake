@@ -13,33 +13,33 @@ public final class LevelGenerator {
     static {
         levels.add(
                 "xxxxxxxxxxxxxxxxx\n" +
-                "x.....x.........x\n" +
-                "x.....x.........x\n" +
-                "x.....xxxx..x...x\n" +
-                "x...........x...x\n" +
-                "x.s...x.....x...x\n" +
-                "x.o...x.....x...x\n" +
-                "xxxxxxxxxxxxxxxxx"
+                        "x.....x.........x\n" +
+                        "x.....x.........x\n" +
+                        "x.....xxxx..x...x\n" +
+                        "x...........x...x\n" +
+                        "x.s...x.....x...x\n" +
+                        "x.o...x.....x...x\n" +
+                        "xxxxxxxxxxxxxxxxx"
         );
         levels.add(
                 "xxxxxxxxxxxxxxxxx\n" +
-                "x...............x\n" +
-                "x..xxxx...xxxx..x\n" +
-                "x...............x\n" +
-                "x..xxxxxxxxxxx..x\n" +
-                "x.s...x...x.....x\n" +
-                "x.o.............x\n" +
-                "xxxxxxxxxxxxxxxxx"
+                        "x...............x\n" +
+                        "x..xxxx...xxxx..x\n" +
+                        "x...............x\n" +
+                        "x..xxxxxxxxxxx..x\n" +
+                        "x.s...x...x.....x\n" +
+                        "x.o.............x\n" +
+                        "xxxxxxxxxxxxxxxxx"
         );
         levels.add(
                 "xxxxxxxxxxxxxxxxx\n" +
-                "x...............x\n" +
-                "x.xxxxxxxx......x\n" +
-                "x...............x\n" +
-                "x....xxxxxxxxxxxx\n" +
-                "x.s.............x\n" +
-                "xxo....x........x\n" +
-                ".xxxxxxxxxxxxxxxx"
+                        "x...............x\n" +
+                        "x.xxxxxxxx......x\n" +
+                        "x...............x\n" +
+                        "x....xxxxxxxxxxxx\n" +
+                        "x.s.............x\n" +
+                        "xxo....x........x\n" +
+                        ".xxxxxxxxxxxxxxxx"
         );
     }
 
@@ -80,19 +80,21 @@ public final class LevelGenerator {
 
     public static ArrayList<Level> getLevels() {
         val result = new ArrayList<Level>();
-        for (int i = 0; i < levels.size(); i++) {
-            val map = parseLevel(levels.get(i));
-            val snake = (Snake) map.findFirst(Snake.class);
-            val snakeBody = (SnakeBody) map.findFirst(SnakeBody.class);
-
-            if(!snake.isNeighboor(snakeBody))
-                throw new IllegalArgumentException();
-
-            snake.getBody().add(snakeBody);
-
-            result.add(new Level(map, snake, 3 + 2 * i));
-        }
+        for (int i = 0; i < levels.size(); i++)
+            result.add(getLevel(i));
         return result;
+    }
+
+    public static Level getLevel(int number) {
+        val map = parseLevel(levels.get(number));
+        val snake = (Snake) map.findFirst(Snake.class);
+        val snakeBody = (SnakeBody) map.findFirst(SnakeBody.class);
+
+        if (!snake.isNeighboor(snakeBody))
+            throw new IllegalArgumentException();
+
+        snake.getBody().add(snakeBody);
+        return new Level(map, snake, 3 + 2 * number);
     }
 
     private LevelGenerator() {

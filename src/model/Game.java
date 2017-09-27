@@ -25,6 +25,11 @@ public class Game {
             handler.onGameEnd(levelNumber, snakeLength, snakeIsDead);
     }
 
+    public void refreshGame() {
+        currentLevel = LevelGenerator.getLevel(currentLevelNumber);
+        subscribeToEvents(currentLevel);
+    }
+
     public Game(ArrayList<Level> levels, int difficulty) {
         if (difficulty < 1)
             throw new ExceptionInInitializerError();

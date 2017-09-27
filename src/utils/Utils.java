@@ -1,8 +1,9 @@
 package utils;
 
 import lombok.Getter;
-import model.Direction;
+import model.*;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,5 +33,14 @@ public final class Utils {
         put(Direction.DOWN, 1);
         put(Direction.LEFT, 0);
         put(Direction.RIGHT, 0);
+    }};
+
+    @Getter
+    private final static  Map<Class, Color> unitsImages = new HashMap<Class, Color>(){{
+        put(Apple.class, Color.RED);
+        put(Snake.class, Color.magenta);
+        put(SnakeBody.class, Color.green);
+        put(Space.class, Color.white);
+        put(Wall.class, Color.BLACK);
     }};
 }
