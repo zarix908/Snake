@@ -39,7 +39,21 @@ public final class LevelGenerator {
                         "x....xxxxxxxxxxxx\n" +
                         "x.s.............x\n" +
                         "xxo....x........x\n" +
-                        ".xxxxxxxxxxxxxxxx"
+                        "xxxxxxxxxxxxxxxxx"
+        );
+        levels.add(
+                "xxxxxxxxxxxxxxxxxxxxxxxxxx\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x....s...................x\n" +
+                        "x....o...................x\n" +
+                        "xxxxxxxxxxxxxxxxxxxxxxxxxx"
         );
     }
 
@@ -56,7 +70,7 @@ public final class LevelGenerator {
                 throw new InstantiationException();
 
             for (int j = 0; j < lines[i].length(); j++) {
-                val currentChar = lines[i].charAt(j);
+                val currentChar = lines[i].toLowerCase().charAt(j);
                 if (currentChar == '.')
                     result.add(j, i, new Space(result, new Point(j, i)));
                 else if (currentChar == 'x')
@@ -94,7 +108,7 @@ public final class LevelGenerator {
             throw new IllegalArgumentException();
 
         snake.getBody().add(snakeBody);
-        return new Level(map, snake, 3 + 2 * number);
+        return new Level(map, snake, 4 + 2 * number);
     }
 
     private LevelGenerator() {
