@@ -12,9 +12,18 @@ public class Game {
     private Level currentLevel;
     private int currentLevelNumber = 0;
     private final ArrayList<GameEndEventHandler> endGameHandlers = new ArrayList<>();
+    private final ArrayList<ChangeLevelEventHandler> changeLevelHandlers = new ArrayList<>();
 
     public void addEndGameHandler(GameEndEventHandler handler) {
         endGameHandlers.add(handler);
+    }
+    public void addChangeLevelHandler(ChangeLevelEventHandler handler) {
+        changeLevelHandlers.add(handler);
+    }
+
+    private void notifyChangeLevel(int levelNumber) {
+        for (val handler : changeLevelHandlers)
+            handler.onLevelChanged(levelNumber);
     }
 
     private void notifyEndGame(int levelNumber, int snakeLength, boolean snakeIsDead) {
@@ -77,5 +86,6 @@ public class Game {
         currentLevelNumber++;
         currentLevel = levels.get(currentLevelNumber);
         addAppleToMap();
+        notifyChangeLevel(currentLevelNumber);
     }
 }
