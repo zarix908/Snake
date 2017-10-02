@@ -1,9 +1,9 @@
 package utils;
 
+import javafx.scene.paint.Color;
 import lombok.Getter;
 import model.*;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,9 +38,9 @@ public final class Utils {
     @Getter
     private final static  Map<Class, Color> unitsImages = new HashMap<Class, Color>(){{
         put(Apple.class, Color.RED);
-        put(Snake.class, Color.magenta);
-        put(SnakeBody.class, Color.green);
-        put(Space.class, Color.white);
+        put(Snake.class, Color.GRAY);
+        put(SnakeBody.class, Color.GREEN);
+        put(Space.class, Color.WHITE);
         put(Wall.class, Color.BLACK);
     }};
 }

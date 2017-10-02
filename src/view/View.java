@@ -1,73 +1,54 @@
 package view;
-import lombok.Getter;
+
+import javafx.animation.AnimationTimer;
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import lombok.val;
-import model.*;
+import model.Game;
 import utils.Config;
+import utils.Utils;
 
-import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Timer;
+import java.util.TimerTask;
 
-
-public class View extends JFrame implements KeyListener{
-    @Getter private Game game;
+public class View extends Group{
+    private Game game;
     private Timer timer;
 
-    public View(Game game){
-        super("Snake");
+    public View(Game game)
+    {
         this.game = game;
-        init();
-    }
-
-    private void init() {
         val map = game.getCurrentLevel().getMap();
-        setBounds(100, 100, map.getWidth() * Config.GAME_OBJECT_SIZE,
-                map.getHeight() * Config.GAME_OBJECT_SIZE);
+        Canvas canvas = new Canvas(map.getWidth() * Config.GAME_OBJECT_SIZE, map.getHeight() * Config.GAME_OBJECT_SIZE);
+        this.getChildren().add( canvas );
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        new AnimationTimer()
+        {
+            public void handle(long currentNanoTime)
+            {
+                val map = game.getCurrentLevel().getMap();
+                val size = Config.GAME_OBJECT_SIZE;
+
+                for (int x = 0; x < map.getWidth(); x++)
+                    for (int y = 0; y < map.getHeight(); y++) {
+                        val gameObject = map.get(x, y);
+                        gc.setFill(Utils.getUnitsImages().get(gameObject.getClass()));
+                        gc.fillRect(x * size, y * size, size, size);
+                    }
+
+            }
+        }.start();
+
 
         timer = new Timer();
-        timer.schedule(new UpdateViewTimerTask(this),0 , 1000 / game.getDifficulty());
-
-        val canvas = new DrawCanvas(game);
-        this.add(canvas);
-
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        game.addEndGameHandler(this::onGameEnd);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {}
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        val snake = game.getCurrentLevel().getSnake();
-
-        if (e.getKeyCode() == KeyEvent.VK_LEFT)
-            snake.rotate(Direction.LEFT);
-        else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-            snake.rotate(Direction.RIGHT);
-        else if (e.getKeyCode() == KeyEvent.VK_UP)
-            snake.rotate(Direction.UP);
-        else if (e.getKeyCode() == KeyEvent.VK_DOWN)
-            snake.rotate(Direction.DOWN);
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {}
-
-
-    private void onGameEnd(int levelNumber, int snakeLength, boolean snakeIsDead) {
-        timer.cancel();
-
-        JOptionPane.showConfirmDialog(new JPanel(),
-                String.format("Game over!\n Your score:\n level: %d\n apples: %d",
-                levelNumber, snakeLength - 2));
-
-        game.refreshGame();
-
-        timer = new Timer();
-        timer.schedule(new UpdateViewTimerTask(this),0 , 1000 / game.getDifficulty());
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                game.makeGameIteration();
+            }
+        }, 0, 500);
     }
 }
-

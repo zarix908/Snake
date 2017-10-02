@@ -9,8 +9,6 @@ import java.util.Random;
 public class Game {
     private final ArrayList<Level> levels;
     @Getter
-    private int difficulty;
-    @Getter
     private Level currentLevel;
     private int currentLevelNumber = 0;
     private final ArrayList<GameEndEventHandler> endGameHandlers = new ArrayList<>();
@@ -30,18 +28,15 @@ public class Game {
         addAppleToMap();
     }
 
-    public Game(ArrayList<Level> levels, int difficulty) {
-        if (difficulty < 1)
-            throw new ExceptionInInitializerError();
-        this.difficulty = difficulty;
+    public Game(ArrayList<Level> levels) {
         this.levels = levels;
         this.levels.forEach(this::subscribeToEvents);
         currentLevel = levels.get(0);
         addAppleToMap();
     }
 
-    public Game(int difficulty) {
-        this(LevelGenerator.getLevels(), difficulty);
+    public Game() {
+        this(LevelGenerator.getLevels());
     }
 
     public void makeGameIteration() {
