@@ -39,7 +39,21 @@ public final class LevelGenerator {
                         "x....xxxxxxxxxxxx\n" +
                         "x.s.............x\n" +
                         "xxo....x........x\n" +
-                        ".xxxxxxxxxxxxxxxx"
+                        "xxxxxxxxxxxxxxxxx"
+        );
+        levels.add(
+                "xxxxxxxxxxxxxxxxxxxxxxxxxx\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x........................x\n" +
+                        "x....s...................x\n" +
+                        "x....o...................x\n" +
+                        "xxxxxxxxxxxxxxxxxxxxxxxxxx"
         );
     }
 
