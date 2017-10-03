@@ -1,5 +1,6 @@
 package model;
 
+import lombok.Getter;
 import lombok.val;
 import utils.Utils;
 
@@ -7,7 +8,7 @@ import java.awt.*;
 
 public class GameObject {
     protected Map map;
-    protected Point location;
+    @Getter protected Point location;
 
     public GameObject(Map map, Point location) {
         this.map = map;
