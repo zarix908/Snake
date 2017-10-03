@@ -20,7 +20,7 @@ public class Map {
 
     public void add(int x, int y, GameObject gameObject){
         val location = gameObject.location;
-        if(location.x != x || location.y != y)
+        if(location.x != x || location.y != y || gameObject.map != this)
             throw new IllegalArgumentException();
         map[y][x] = gameObject;
     }
