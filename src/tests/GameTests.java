@@ -1,3 +1,5 @@
+package tests;
+
 import lombok.val;
 import model.*;
 import org.junit.Assert;

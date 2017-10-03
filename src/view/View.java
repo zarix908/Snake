@@ -30,10 +30,12 @@ public class View extends Group{
     private Canvas canvas;
     private Timer gameTimer = new Timer();
     private AnimationTimer animationTimer;
+    private Stage stage;
 
-    public View(Game game)
+    public View(Game game, Stage stage)
     {
         this.game = game;
+        this.stage = stage;
         initialize();
     }
 
@@ -59,12 +61,24 @@ public class View extends Group{
         }, 0, 1000 / game.getDifficult());
 
         game.addEndGameHandler(this::onEndGame);
+        game.addChangeLevelHandler(this::onLevelChanged);
+    }
+
+    private void onLevelChanged(int level)
+    {
+        val map = game.getCurrentLevel().getMap();
+
+        canvas.setWidth(map.getWidth() * Config.GAME_OBJECT_SIZE);
+        canvas.setHeight(map.getHeight() * Config.GAME_OBJECT_SIZE);
+        stage.sizeToScene();
     }
 
     private void onEndGame(int levelNumber, int snakeLength, boolean snakeIsDead)
     {
         animationTimer.stop();
         gameTimer.cancel();
+
+        stage.hide();
 
         val alert = new Alert(Alert.AlertType.CONFIRMATION);
 
@@ -84,6 +98,7 @@ public class View extends Group{
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == yesButton){
             refreshGame(!snakeIsDead);
+            stage.show();
         } else if (result.get() == noButton) {
             Platform.exit();
         }
@@ -92,9 +107,6 @@ public class View extends Group{
     private void refreshGame(boolean startOver)
     {
         game.refreshGame(startOver);
-
-        val map = game.getCurrentLevel().getMap();
-        canvas.resize(map.getWidth() * Config.GAME_OBJECT_SIZE, map.getHeight() * Config.GAME_OBJECT_SIZE);
 
         gameTimer = new Timer();
         gameTimer.schedule( new TimerTask() {
