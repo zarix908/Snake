@@ -12,7 +12,7 @@ public class Game {
     private Level currentLevel;
     @Getter
     private int difficult;
-    private int currentLevelNumber = 2;
+    private int currentLevelNumber = 0;
     private final ArrayList<GameEndEventHandler> endGameHandlers = new ArrayList<>();
     private final ArrayList<ChangeLevelEventHandler> changeLevelHandlers = new ArrayList<>();
 
@@ -43,7 +43,7 @@ public class Game {
     public Game(ArrayList<Level> levels, int difficult) {
         this.levels = levels;
         this.levels.forEach(this::subscribeToEvents);
-        currentLevel = levels.get(2);
+        currentLevel = levels.get(0);
         addAppleToMap();
         this.difficult = difficult;
     }
