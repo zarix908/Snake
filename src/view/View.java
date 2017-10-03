@@ -1,26 +1,17 @@
 package view;
 
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import lombok.val;
 import model.Game;
 import utils.Config;
 import utils.Utils;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -66,11 +57,7 @@ public class View extends Group{
 
     private void onLevelChanged(int level)
     {
-        val map = game.getCurrentLevel().getMap();
-
-        canvas.setWidth(map.getWidth() * Config.GAME_OBJECT_SIZE);
-        canvas.setHeight(map.getHeight() * Config.GAME_OBJECT_SIZE);
-        stage.sizeToScene();
+        resizeField();
     }
 
     private void onEndGame(int levelNumber, int snakeLength, boolean snakeIsDead)
@@ -107,6 +94,7 @@ public class View extends Group{
     private void refreshGame(boolean startOver)
     {
         game.refreshGame(startOver);
+        resizeField();
 
         gameTimer = new Timer();
         gameTimer.schedule( new TimerTask() {
@@ -117,6 +105,15 @@ public class View extends Group{
         }, 0, 1000 / game.getDifficult());
 
         animationTimer.start();
+    }
+    
+    private void resizeField()
+    {
+        val map = game.getCurrentLevel().getMap();
+
+        canvas.setWidth(map.getWidth() * Config.GAME_OBJECT_SIZE);
+        canvas.setHeight(map.getHeight() * Config.GAME_OBJECT_SIZE);
+        stage.sizeToScene();
     }
 
     private void animationTimerTick() {
