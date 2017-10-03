@@ -30,9 +30,8 @@ public class View extends Group{
     private Canvas canvas;
     private Timer gameTimer = new Timer();
     private AnimationTimer animationTimer;
-    private
 
-    public View(Game game, Scene scene)
+    public View(Game game)
     {
         this.game = game;
         initialize();
