@@ -53,7 +53,7 @@ public class Game {
     }
 
     public void makeGameIteration() {
-        currentLevel.getSnake().Move();
+        currentLevel.getSnake().move();
         if (currentLevel.getSnake().getLength() > currentLevel.getAppleCount())
             switchToNextLevel();
     }

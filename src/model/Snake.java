@@ -51,7 +51,7 @@ public class Snake extends GameObject {
         this.direction = direction;
     }
 
-    public void Move() {
+    public void move() {
         val destination = getNeighbor(direction);
         if (destination == null) {
             notifyDeath();

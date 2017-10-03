@@ -6,11 +6,13 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.val;
 import model.Game;
@@ -28,8 +30,9 @@ public class View extends Group{
     private Canvas canvas;
     private Timer gameTimer = new Timer();
     private AnimationTimer animationTimer;
+    private
 
-    public View(Game game)
+    public View(Game game, Scene scene)
     {
         this.game = game;
         initialize();
