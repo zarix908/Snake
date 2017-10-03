@@ -41,6 +41,17 @@ public class GameObject {
         return dx * dx + dy * dy == 1;
     }
 
+    public Direction getDirectionTo(GameObject other){
+        if(!isNeighboor(other))
+            throw new IllegalArgumentException();
+        val dx = location.x - other.location.x;
+        val dy = location.y - other.location.y;
+        return dx > 0 ? Direction.LEFT
+                : dx < 0 ? Direction.RIGHT
+                : dy > 0 ? Direction.UP
+                : Direction.DOWN;
+    }
+
     @Override
     public String toString(){
         return getClass().toString() + "(" + location.x + "," + location.y + ")";

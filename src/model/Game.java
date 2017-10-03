@@ -10,11 +10,22 @@ public class Game {
     private final ArrayList<Level> levels;
     @Getter
     private Level currentLevel;
+    @Getter
+    private int difficult;
     private int currentLevelNumber = 0;
     private final ArrayList<GameEndEventHandler> endGameHandlers = new ArrayList<>();
+    private final ArrayList<ChangeLevelEventHandler> changeLevelHandlers = new ArrayList<>();
 
     public void addEndGameHandler(GameEndEventHandler handler) {
         endGameHandlers.add(handler);
+    }
+    public void addChangeLevelHandler(ChangeLevelEventHandler handler) {
+        changeLevelHandlers.add(handler);
+    }
+
+    private void notifyChangeLevel(int levelNumber) {
+        for (val handler : changeLevelHandlers)
+            handler.onLevelChanged(levelNumber);
     }
 
     private void notifyEndGame(int levelNumber, int snakeLength, boolean snakeIsDead) {
@@ -22,21 +33,23 @@ public class Game {
             handler.onGameEnd(levelNumber, snakeLength, snakeIsDead);
     }
 
-    public void refreshGame() {
+    public void refreshGame(boolean startOver) {
+        currentLevelNumber = startOver ? 0 : currentLevelNumber;
         currentLevel = LevelGenerator.getLevel(currentLevelNumber);
         subscribeToEvents(currentLevel);
         addAppleToMap();
     }
 
-    public Game(ArrayList<Level> levels) {
+    public Game(ArrayList<Level> levels, int difficult) {
         this.levels = levels;
         this.levels.forEach(this::subscribeToEvents);
         currentLevel = levels.get(0);
         addAppleToMap();
+        this.difficult = difficult;
     }
 
-    public Game() {
-        this(LevelGenerator.getLevels());
+    public Game(int difficult) {
+        this(LevelGenerator.getLevels(), difficult);
     }
 
     public void makeGameIteration() {
@@ -77,5 +90,6 @@ public class Game {
         currentLevelNumber++;
         currentLevel = levels.get(currentLevelNumber);
         addAppleToMap();
+        notifyChangeLevel(currentLevelNumber);
     }
 }
