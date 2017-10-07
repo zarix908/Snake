@@ -16,6 +16,7 @@ public class SnakeHead extends GameObject {
     private Direction direction = Direction.UP;
     private ArrayList<SnakeDeathHandler> deathHandlers = new ArrayList<>();
     private ArrayList<EatAppleEventHandler> eatAppleHandlers = new ArrayList<>();
+    private ArrayList<ThrewBackTailHandler> threwBackTailHAndlers = new ArrayList<>();
     @Getter
     private LinkedList<SnakeBodyPart> body = new LinkedList<>();
     private final Map<Class, Consumer<GameObject>> movementHandlers = new HashMap<>();
@@ -26,6 +27,15 @@ public class SnakeHead extends GameObject {
 
     public void addEatAppleHandler(EatAppleEventHandler handler) {
         eatAppleHandlers.add(handler);
+    }
+
+    public void addThrewBackTailHandler(ThrewBackTailHandler handler) {
+        threwBackTailHAndlers.add(handler);
+    }
+
+    private void notifyThrewbackTail() {
+        for (val handler : threwBackTailHAndlers)
+            handler.onThrewBackTail();
     }
 
     private void notifyDeath(int length) {
@@ -70,8 +80,10 @@ public class SnakeHead extends GameObject {
         while (body.size() > 1) {
             val bodyPart = body.pollFirst();
             map.add(bodyPart.location, new Space(map, bodyPart.location));
-            if (bodyPart.isSafePart())
+            if (bodyPart.isSafePart()) {
+                notifyThrewbackTail();
                 return;
+            }
         }
         notifyDeath(lenhgth);
     }
