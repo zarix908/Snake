@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import lombok.Getter;
 import lombok.val;
 import model.Game;
 import model.SnakeBodyPart;
@@ -19,12 +20,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class View extends Group {
+    @Getter
+    private boolean isPaused = false;
     private Game game;
     private Canvas canvas;
     private Timer gameTimer = new Timer();
     private AnimationTimer animationTimer;
     private Stage stage;
-    private int iteration;
 
     public View(Game game, Stage stage) {
         this.game = game;
@@ -53,12 +55,33 @@ public class View extends Group {
             }
         }, 0, 1000 / game.getDifficult());
 
+        pause();
+
         game.addEndGameHandler(this::onEndGame);
         game.addChangeLevelHandler(this::onLevelChanged);
+        game.getCurrentLevel().getSnakeHead().addThrewBackTailHandler(this::pause);
+    }
+
+    public void pause() {
+        isPaused = true;
+        gameTimer.cancel();
+    }
+
+    public void resume() {
+        isPaused = false;
+
+        gameTimer = new Timer();
+        gameTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> game.makeGameIteration());
+            }
+        }, 0, 1000 / game.getDifficult());
     }
 
     private void onLevelChanged(int level) {
         resizeField();
+        game.getCurrentLevel().getSnakeHead().addThrewBackTailHandler(this::pause);
     }
 
     private void onEndGame(int levelNumber, int snakeLength, boolean snakeIsDead) {
@@ -94,6 +117,7 @@ public class View extends Group {
     private void refreshGame(boolean startOver) {
         game.refreshGame(startOver);
         resizeField();
+        game.getCurrentLevel().getSnakeHead().addThrewBackTailHandler(this::pause);
 
         gameTimer = new Timer();
         gameTimer.schedule(new TimerTask() {
@@ -119,14 +143,20 @@ public class View extends Group {
         val size = Config.GAME_OBJECT_SIZE;
         val graphicsContext = canvas.getGraphicsContext2D();
 
-        for (int x = 0; x < map.getWidth(); x++)
-            for (int y = 0; y < map.getHeight(); y++) {
-                val gameObject = map.get(x, y);
-                graphicsContext.setFill(Utils.getUnitsImages().get(gameObject.getClass()));
-                if(gameObject instanceof SnakeBodyPart && ((SnakeBodyPart) gameObject).isSafePart())
-                    graphicsContext.setFill(Color.BLUE);
-                graphicsContext.fillRect(x * size, y * size, size, size);
-            }
+        if (!isPaused) {
+            for (int x = 0; x < map.getWidth(); x++)
+                for (int y = 0; y < map.getHeight(); y++) {
+                    val gameObject = map.get(x, y);
+                    graphicsContext.setFill(Utils.getUnitsImages().get(gameObject.getClass()));
+                    if (gameObject instanceof SnakeBodyPart && ((SnakeBodyPart) gameObject).isSafePart())
+                        graphicsContext.setFill(Color.BLUE);
+                    graphicsContext.fillRect(x * size, y * size, size, size);
+                }
+        } else {
+            graphicsContext.setFill(Color.RED);
+            graphicsContext.fillText("PAUSE\n(Press any key to continue)",
+                    map.getWidth() * size / 2 - 50, map.getHeight() * size / 2 - 50);
+        }
     }
 
     public void closeTimer() {

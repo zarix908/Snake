@@ -9,7 +9,6 @@ import model.Direction;
 import model.Game;
 import view.View;
 
-
 public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
@@ -29,6 +28,9 @@ public class Main extends Application {
                 event -> {
                     val snake = game.getCurrentLevel().getSnakeHead();
 
+                    if (view.isPaused())
+                        view.resume();
+
                     if (event.getCode() == KeyCode.RIGHT)
                         snake.rotate(Direction.RIGHT);
                     else if (event.getCode() == KeyCode.LEFT)
@@ -37,6 +39,8 @@ public class Main extends Application {
                         snake.rotate(Direction.UP);
                     else if (event.getCode() == KeyCode.DOWN)
                         snake.rotate(Direction.DOWN);
+                    else if (event.getCode() == KeyCode.F2)
+                        view.pause();
                 }
         );
 

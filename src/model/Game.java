@@ -28,6 +28,8 @@ public class Game {
         changeLevelHandlers.add(handler);
     }
 
+
+
     private void notifyChangeLevel(int levelNumber) {
         for (val handler : changeLevelHandlers)
             handler.onLevelChanged(levelNumber);
