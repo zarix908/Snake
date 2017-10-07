@@ -43,5 +43,15 @@ public final class Utils {
         put(Space.class, Color.WHITE);
         put(Wall.class, Color.BLACK);
         put(Mushroom.class, Color.BROWN);
+        put(Portal.class, Color.BLUEVIOLET);
     }};
+
+    public static boolean tryParseChar(Character value){
+        try {
+            Character.getNumericValue(value);
+            return true;
+        } catch (NumberFormatException e){
+            return false;
+        }
+    }
 }
