@@ -4,12 +4,12 @@ import lombok.Getter;
 
 public class Level {
     @Getter private Map map;
-    @Getter private Snake snake;
+    @Getter private SnakeHead snakeHead;
     @Getter private int appleCount;
 
-    public Level(Map map, Snake snake, int appleCount){
+    public Level(Map map, SnakeHead snakeHead, int appleCount){
         this.map = map;
-        this.snake = snake;
+        this.snakeHead = snakeHead;
         this.appleCount = appleCount;
     }
 }

@@ -2,11 +2,10 @@ package model;
 
 import lombok.Getter;
 import lombok.val;
+import utils.Point;
 import utils.Utils;
 
-import java.awt.*;
-
-public class GameObject {
+public abstract class GameObject {
     protected Map map;
     @Getter protected Point location;
 
@@ -15,7 +14,7 @@ public class GameObject {
         this.location = location;
     }
 
-    protected void swap(GameObject other) {
+    void swap(GameObject other) {
         if (map != other.map)
             throw new IllegalArgumentException("objects are on different maps");
 
@@ -24,29 +23,28 @@ public class GameObject {
         location = otherLocation;
         map.add(other.location, other);
         map.add(location, this);
-
     }
 
-    protected GameObject getNeighbor(Direction direction) {
-        val destinationX = Utils.getXOffsets().get(direction) + location.x;
-        val destinationY = Utils.getYOffsets().get(direction) + location.y;
+    GameObject getNeighbor(Direction direction) {
+        val destinationX = Utils.getXOffsets().get(direction) + location.getX();
+        val destinationY = Utils.getYOffsets().get(direction) + location.getY();
 
         if (destinationX < 0 || destinationY < 0 || destinationY >= map.getHeight() || destinationX >= map.getWidth())
             return null;
         return map.get(destinationX, destinationY);
     }
 
-    protected boolean isNeighboor(GameObject other) {
-        val dx = location.x - other.location.x;
-        val dy = location.y - other.location.y;
+    boolean isNeighboor(GameObject other) {
+        val dx = location.getX() - other.location.getX();
+        val dy = location.getY() - other.location.getY();
         return dx * dx + dy * dy == 1;
     }
 
     public Direction getDirectionTo(GameObject other){
         if(!isNeighboor(other))
             throw new IllegalArgumentException();
-        val dx = location.x - other.location.x;
-        val dy = location.y - other.location.y;
+        val dx = location.getX() - other.location.getX();
+        val dy = location.getY() - other.location.getY();
         return dx > 0 ? Direction.LEFT
                 : dx < 0 ? Direction.RIGHT
                 : dy > 0 ? Direction.UP
@@ -55,6 +53,6 @@ public class GameObject {
 
     @Override
     public String toString(){
-        return getClass().toString() + "(" + location.x + "," + location.y + ")";
+        return getClass().toString() + "(" + location.getX() + "," + location.getY() + ")";
     }
 }

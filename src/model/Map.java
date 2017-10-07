@@ -2,8 +2,8 @@ package model;
 
 import lombok.Getter;
 import lombok.val;
+import utils.Point;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -20,13 +20,13 @@ public class Map {
 
     public void add(int x, int y, GameObject gameObject){
         val location = gameObject.location;
-        if(location.x != x || location.y != y || gameObject.map != this)
+        if(location.getX() != x || location.getY() != y || gameObject.map != this)
             throw new IllegalArgumentException();
         map[y][x] = gameObject;
     }
 
     public void add(Point point, GameObject gameObject){
-        add(point.x, point.y, gameObject);
+        add(point.getX(), point.getY(), gameObject);
     }
 
     public GameObject get(int x, int y){
@@ -34,7 +34,7 @@ public class Map {
     }
 
     public GameObject get(Point point){
-        return get(point.x, point.y);
+        return get(point.getX(), point.getY());
     }
 
     public GameObject findFirst(Class cls){

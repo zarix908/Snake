@@ -10,25 +10,24 @@ import model.Game;
 import view.View;
 
 
-public class Main extends Application{
+public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        primaryStage.setTitle( "Snake game" );
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Snake game");
         val game = new Game(3);
 
-        val view =  new View(game, primaryStage);
+        val view = new View(game, primaryStage);
         Scene theScene = new Scene(view);
-        primaryStage.setScene( theScene );
-
+        primaryStage.setScene(theScene);
 
 
         theScene.setOnKeyPressed(
                 event -> {
-                    val snake = game.getCurrentLevel().getSnake();
+                    val snake = game.getCurrentLevel().getSnakeHead();
 
                     if (event.getCode() == KeyCode.RIGHT)
                         snake.rotate(Direction.RIGHT);

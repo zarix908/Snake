@@ -38,9 +38,10 @@ public final class Utils {
     @Getter
     private final static  Map<Class, Color> unitsImages = new HashMap<Class, Color>(){{
         put(Apple.class, Color.RED);
-        put(Snake.class, Color.GRAY);
-        put(SnakeBody.class, Color.GREEN);
+        put(SnakeHead.class, Color.GRAY);
+        put(SnakeBodyPart.class, Color.GREEN);
         put(Space.class, Color.WHITE);
         put(Wall.class, Color.BLACK);
+        put(Mushroom.class, Color.BROWN);
     }};
 }

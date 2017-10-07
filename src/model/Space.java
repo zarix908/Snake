@@ -1,6 +1,6 @@
 package model;
 
-import java.awt.*;
+import utils.Point;
 
 public class Space extends GameObject {
     public Space(Map map, Point location) {

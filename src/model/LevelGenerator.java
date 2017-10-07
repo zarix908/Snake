@@ -2,9 +2,8 @@ package model;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import utils.Point;
 
-
-import java.awt.*;
 import java.util.ArrayList;
 
 public final class LevelGenerator {
@@ -76,12 +75,12 @@ public final class LevelGenerator {
                 else if (currentChar == 'x')
                     result.add(j, i, new Wall(result, new Point(j, i)));
                 else if (currentChar == 's') {
-                    result.add(j, i, new Snake(result, new Point(j, i)));
+                    result.add(j, i, new SnakeHead(result, new Point(j, i)));
                     snakeHeadCount++;
                 } else if (currentChar == '@')
                     result.add(j, i, new Apple(result, new Point(j, i)));
                 else if (currentChar == 'o') {
-                    result.add(j, i, new SnakeBody(result, new Point(j, i)));
+                    result.add(j, i, new SnakeBodyPart(result, new Point(j, i), false));
                     snakeBodyCount++;
                 } else
                     throw new IllegalArgumentException();
@@ -101,8 +100,8 @@ public final class LevelGenerator {
 
     public static Level getLevel(int number) {
         val map = parseLevel(levels.get(number));
-        val snake = (Snake) map.findFirst(Snake.class);
-        val snakeBody = (SnakeBody) map.findFirst(SnakeBody.class);
+        val snake = (SnakeHead) map.findFirst(SnakeHead.class);
+        val snakeBody = (SnakeBodyPart) map.findFirst(SnakeBodyPart.class);
 
         if (!snake.isNeighboor(snakeBody))
             throw new IllegalArgumentException();
