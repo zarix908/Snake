@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class SnakeHead extends GameObject {
+public class SnakeHead extends SnakePart {
 
     @Getter
     private Direction direction = Direction.UP;

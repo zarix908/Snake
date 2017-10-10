@@ -17,7 +17,7 @@ public final class LevelGenerator {
                         "x.....x.........x\n" +
                         "x.....x.........x\n" +
                         "x.....xxxx..x...x\n" +
-                        "x...........x...x\n" +
+                            "x...........x...x\n" +
                         "x.s...x.....x...x\n" +
                         "x.o...x.....x...x\n" +
                         "xxxxxxxxxxxxxxxxx"
