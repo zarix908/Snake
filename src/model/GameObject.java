@@ -34,14 +34,21 @@ public abstract class GameObject {
         return map.get(destinationX, destinationY);
     }
 
-    boolean isNeighboor(GameObject other) {
+    GameObject gedDestinationBy(Direction direction){
+        val result = getNeighbor(direction);
+        if(!(result instanceof Portal))
+            return result;
+        return ((Portal) result).getOut().gedDestinationBy(direction);
+    }
+
+    boolean isNeighbor(GameObject other) {
         val dx = location.getX() - other.location.getX();
         val dy = location.getY() - other.location.getY();
         return dx * dx + dy * dy == 1;
     }
 
     public Direction getDirectionTo(GameObject other){
-        if(!isNeighboor(other))
+        if(!isNeighbor(other))
             throw new IllegalArgumentException();
         val dx = location.getX() - other.location.getX();
         val dy = location.getY() - other.location.getY();

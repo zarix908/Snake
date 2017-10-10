@@ -2,7 +2,9 @@ package model;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import utils.Config;
 import utils.Point;
+import utils.Utils;
 
 import java.util.ArrayList;
 
@@ -44,12 +46,12 @@ public final class LevelGenerator {
                 "xxxxxxxxxxxxxxxxxxxxxxxxxx\n" +
                         "x........................x\n" +
                         "x........................x\n" +
+                        "x....1...................x\n" +
                         "x........................x\n" +
                         "x........................x\n" +
                         "x........................x\n" +
                         "x........................x\n" +
-                        "x........................x\n" +
-                        "x........................x\n" +
+                        "x...............1........x\n" +
                         "x....s...................x\n" +
                         "x....o...................x\n" +
                         "xxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -63,6 +65,7 @@ public final class LevelGenerator {
         val result = new Map(lines.length, width);
         int snakeHeadCount = 0;
         int snakeBodyCount = 0;
+        val portalManager = new PortalManager();
 
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].length() != width)
@@ -82,12 +85,18 @@ public final class LevelGenerator {
                 else if (currentChar == 'o') {
                     result.add(j, i, new SnakeBodyPart(result, new Point(j, i), false));
                     snakeBodyCount++;
+                } else if (Utils.tryParseChar(currentChar)) {
+                    val portalId = Character.getNumericValue(currentChar);
+                    val portal = new Portal(result, new Point(j, i), portalId);
+                    portalManager.addPortal(portal);
+                    result.add(j, i, portal);
                 } else
                     throw new IllegalArgumentException();
             }
         }
         if (snakeBodyCount != 1 || snakeHeadCount != 1)
             throw new IllegalArgumentException();
+        portalManager.connectPortals();
         return result;
     }
 
@@ -103,11 +112,11 @@ public final class LevelGenerator {
         val snake = (SnakeHead) map.findFirst(SnakeHead.class);
         val snakeBody = (SnakeBodyPart) map.findFirst(SnakeBodyPart.class);
 
-        if (!snake.isNeighboor(snakeBody))
+        if (!snake.isNeighbor(snakeBody))
             throw new IllegalArgumentException();
 
         snake.getBody().add(snakeBody);
-        return new Level(map, snake, 4 + 2 * number);
+        return new Level(map, snake, Config.getApplesCount(number));
     }
 
     private LevelGenerator() {

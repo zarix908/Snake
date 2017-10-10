@@ -1,5 +1,6 @@
 package utils;
 
+import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import lombok.Getter;
 import lombok.val;
@@ -98,4 +99,23 @@ public final class Utils {
         put(Wall.class, SnakeColor.BLACK);
         put(Mushroom.class, SnakeColor.BROWN);
     }};*/
+
+    private final static  Map<Class, Color> unitsImages = new HashMap<Class, Color>(){{
+        put(Apple.class, Color.RED);
+        put(SnakeHead.class, Color.GRAY);
+        put(SnakeBodyPart.class, Color.GREEN);
+        put(Space.class, Color.WHITE);
+        put(Wall.class, Color.BLACK);
+        put(Mushroom.class, Color.BROWN);
+        put(Portal.class, Color.BLUEVIOLET);
+    }};
+
+    public static boolean tryParseChar(Character value){
+        try {
+            Character.getNumericValue(value);
+            return true;
+        } catch (NumberFormatException e){
+            return false;
+        }
+    }
 }

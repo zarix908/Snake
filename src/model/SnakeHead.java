@@ -64,7 +64,7 @@ public class SnakeHead extends GameObject {
     }
 
     public void move() {
-        val destination = getNeighbor(direction);
+        val destination = gedDestinationBy(direction);
         if (destination == null) {
             notifyDeath(getLength());
             return;
@@ -81,7 +81,7 @@ public class SnakeHead extends GameObject {
             val bodyPart = body.pollFirst();
             map.add(bodyPart.location, new Space(map, bodyPart.location));
             if (bodyPart.isSafePart()) {
-                notifyThrewbackTail();
+//                notifyThrewbackTail();
                 return;
             }
         }
