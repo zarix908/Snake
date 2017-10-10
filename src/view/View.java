@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -109,6 +110,7 @@ public class View extends Group {
         if (result.get() == yesButton) {
             refreshGame(!snakeIsDead);
             stage.show();
+            pause();
         } else if (result.get() == noButton) {
             Platform.exit();
         }
@@ -143,23 +145,23 @@ public class View extends Group {
         val size = Config.GAME_OBJECT_SIZE;
         val graphicsContext = canvas.getGraphicsContext2D();
         val textureGetter = new TextureGetter(game);
+        val width = map.getWidth();
+        val height = map.getHeight();
 
-        if (!isPaused) {
-            graphicsContext.setFill(Color.WHITE);
-            graphicsContext.fillRect(0, 0, map.getWidth() * size, map.getHeight() * size);
 
-            for (int x = 0; x < map.getWidth(); x++)
-                for (int y = 0; y < map.getHeight(); y++) {
-                    val gameObject = map.get(x, y);
-                    val texture = textureGetter.getTexture(gameObject);
+        val grass = new Image("space.png");
 
-                    graphicsContext.drawImage(texture, x * size, y * size, size, size);
-                }
-        } else {
-            graphicsContext.setFill(Color.RED);
-            graphicsContext.fillText("PAUSE\n(Press any key to continue)",
-                    map.getWidth() * size / 2 - 50, map.getHeight() * size / 2 - 50);
-        }
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++) {
+                val gameObject = map.get(x, y);
+                val texture = textureGetter.getTexture(gameObject);
+
+                graphicsContext.drawImage(grass, x * size, y * size, size, size);
+                graphicsContext.drawImage(texture, x * size, y * size, size, size);
+            }
+
+        if (isPaused)
+            graphicsContext.drawImage(new Image("pause_background.png"), width * 25 - 110, height * 25 - 41, 220, 82);
     }
 
     public void closeTimer() {

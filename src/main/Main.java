@@ -17,7 +17,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Snake game");
-        val game = new Game(5);
+        val game = new Game(4);
 
         val view = new View(game, primaryStage);
         Scene theScene = new Scene(view);
