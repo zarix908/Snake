@@ -10,7 +10,6 @@ import lombok.val;
 import model.*;
 import utils.Config;
 import utils.Utils;
-import utils.Utils.SnakeBodyPartsVarieties;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -18,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 class TextureGetter {
     private final static Map<Class, Image> staticTextures = new HashMap<Class, Image>() {{
@@ -26,6 +24,7 @@ class TextureGetter {
         put(Wall.class, new Image("wall.png"));
         put(Space.class, new Image("space.png"));
         put(Mushroom.class, new Image("mushroom.png"));
+        put(Portal.class, new Image("portal.png"));
     }};
 
     private Map<GameObject, Image> dynamicTextures = new HashMap<>();
@@ -99,11 +98,10 @@ class TextureGetter {
         val iv = new ImageView(image);
         iv.setRotate(angle);
         iv.setScaleX(angle > 0 ? 1 : -1);
+        iv.setSmooth(true);
         val params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
-        val resImage = iv.snapshot(params, null);
-        //saveToFile(resImage);
-        return resImage;
+        return iv.snapshot(params, null);
     }
 
     Image getTexture(GameObject gameObject) {
