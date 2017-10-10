@@ -4,9 +4,9 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -38,7 +38,6 @@ public class View extends Group {
     private void initialize() {
         val map = game.getCurrentLevel().getMap();
         canvas = new Canvas(map.getWidth() * Config.GAME_OBJECT_SIZE, map.getHeight() * Config.GAME_OBJECT_SIZE);
-
         this.getChildren().add(canvas);
 
         animationTimer = new AnimationTimer() {

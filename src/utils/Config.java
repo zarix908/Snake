@@ -6,7 +6,6 @@ public final class Config {
 
     public static final int GAME_OBJECT_SIZE = 50;
     public static final int MUSHROOM_ITERATION_PERIOD = 5;
-    public static final String SNAKE_COLOR = "red";
     public static int getApplesCount(int levelNumber) {
         return 4 + 2 * levelNumber;
     }

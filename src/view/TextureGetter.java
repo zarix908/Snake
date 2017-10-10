@@ -17,8 +17,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 class TextureGetter {
+    private static String snakeColor = "blue";
+
     private final static Map<Class, Image> staticTextures = new HashMap<Class, Image>() {{
         put(Apple.class, new Image("apple.png"));
         put(Wall.class, new Image("wall.png"));
@@ -39,7 +42,7 @@ class TextureGetter {
         val lastSnakeBodyPart = snakeBody.getLast();
 
         //HEAD
-        dynamicTextures.put(snakeHead, getRotatedImage("Head", snakeHead.getDirection(),
+        dynamicTextures.put(snakeHead, getRotatedImage("Head", false, snakeHead.getDirection(),
                 snakeHead.getDirectionTo(lastSnakeBodyPart)));
 
 
@@ -47,7 +50,8 @@ class TextureGetter {
         val body = "Body";
 
         if (snakeBody.size() > 1)
-            dynamicTextures.put(lastSnakeBodyPart, getRotatedImage(body, lastSnakeBodyPart.getDirectionTo(snakeHead),
+            dynamicTextures.put(lastSnakeBodyPart, getRotatedImage(body, lastSnakeBodyPart.isSafePart(),
+                    lastSnakeBodyPart.getDirectionTo(snakeHead),
                     lastSnakeBodyPart.getDirectionTo(snakeBody.get(snakeBody.size() - 2))));
 
         for (int i = snakeBody.size() - 2; i >= 1; i--) {
@@ -58,21 +62,24 @@ class TextureGetter {
             val directionToNextPart = snakeBody.get(i).getDirectionTo(nextPart);
 
             dynamicTextures.put(snakeBody.get(i),
-                    getRotatedImage(body, directionToPreviousPart, directionToNextPart));
+                    getRotatedImage(body, snakeBody.get(i).isSafePart(), directionToPreviousPart, directionToNextPart));
         }
 
         //TAIL
-        dynamicTextures.put(snakeBody.getFirst(), getRotatedImage("Tail", snakeBody.getFirst().getDirectionTo(
+        dynamicTextures.put(snakeBody.getFirst(), getRotatedImage("Tail", snakeBody.getFirst().isSafePart(),
+                snakeBody.getFirst().getDirectionTo(
                 snakeBody.size() > 1 ? snakeBody.get(1) : snakeHead
         ), null));
     }
 
-    private Image getRotatedImage(String bodyPartsVarieties,
+    private Image getRotatedImage(String bodyPartsVarieties, boolean isSafeBodyPart,
                                   Direction directionToPreviousBodyPart, Direction directionToNextBodyPart) {
 
         val isStraightBodyPart = identy(directionToPreviousBodyPart, directionToNextBodyPart) || directionToNextBodyPart == null;
 
-        val imageUrl = String.format("%s%s%s.png", Config.SNAKE_COLOR,
+
+        val color = isSafeBodyPart ? "red" : snakeColor; //TODO
+        val imageUrl = String.format("%s%s%s.png", color,
                 bodyPartsVarieties, isStraightBodyPart ? "Straight" : "Turn");
         val image = new Image(imageUrl);
 
