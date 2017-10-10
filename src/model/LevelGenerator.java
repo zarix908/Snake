@@ -2,6 +2,7 @@ package model;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import utils.Config;
 import utils.Point;
 import utils.Utils;
 
@@ -87,7 +88,7 @@ public final class LevelGenerator {
                 } else if (Utils.tryParseChar(currentChar)) {
                     val portalId = Character.getNumericValue(currentChar);
                     val portal = new Portal(result, new Point(j, i), portalId);
-                    portalManager.addPortal(portalId, portal);
+                    portalManager.addPortal(portal);
                     result.add(j, i, portal);
                 } else
                     throw new IllegalArgumentException();
@@ -115,7 +116,7 @@ public final class LevelGenerator {
             throw new IllegalArgumentException();
 
         snake.getBody().add(snakeBody);
-        return new Level(map, snake, 4 + 2 * number);
+        return new Level(map, snake, Config.getApplesCount(number));
     }
 
     private LevelGenerator() {

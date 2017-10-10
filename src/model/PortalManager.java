@@ -1,18 +1,21 @@
 package model;
 
+import lombok.val;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 class PortalManager {
     private HashMap<Integer, ArrayList<Portal>> portals = new HashMap<>();
 
-    void addPortal(int key, Portal portal) {
-        if (!portals.containsKey(key))
-            portals.put(key, new ArrayList<>());
+    void addPortal(Portal portal) {
+        val id = portal.getId();
+        if (!portals.containsKey(id))
+            portals.put(id, new ArrayList<>());
 
-        if (portals.get(key).size() == 2)
+        if (portals.get(id).size() == 2)
             throw new IllegalArgumentException();
-        portals.get(key).add(portal);
+        portals.get(id).add(portal);
     }
 
     void connectPortals() {
