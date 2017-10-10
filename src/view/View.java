@@ -142,15 +142,18 @@ public class View extends Group {
         val map = game.getCurrentLevel().getMap();
         val size = Config.GAME_OBJECT_SIZE;
         val graphicsContext = canvas.getGraphicsContext2D();
+        val textureGetter = new TextureGetter(game);
 
         if (!isPaused) {
+            graphicsContext.setFill(Color.WHITE);
+            graphicsContext.fillRect(0, 0, map.getWidth() * size, map.getHeight() * size);
+
             for (int x = 0; x < map.getWidth(); x++)
                 for (int y = 0; y < map.getHeight(); y++) {
                     val gameObject = map.get(x, y);
-                    graphicsContext.setFill(Utils.getUnitsImages().get(gameObject.getClass()));
-                    if (gameObject instanceof SnakeBodyPart && ((SnakeBodyPart) gameObject).isSafePart())
-                        graphicsContext.setFill(Color.BLUE);
-                    graphicsContext.fillRect(x * size, y * size, size, size);
+                    val texture = textureGetter.getTexture(gameObject);
+
+                    graphicsContext.drawImage(texture, x * size, y * size, size, size);
                 }
         } else {
             graphicsContext.setFill(Color.RED);

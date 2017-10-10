@@ -17,7 +17,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Snake game");
-        val game = new Game(3);
+        val game = new Game(2);
 
         val view = new View(game, primaryStage);
         Scene theScene = new Scene(view);
@@ -39,7 +39,7 @@ public class Main extends Application {
                         snake.rotate(Direction.UP);
                     else if (event.getCode() == KeyCode.DOWN)
                         snake.rotate(Direction.DOWN);
-                    else if (event.getCode() == KeyCode.F2)
+                    else if (event.getCode() == KeyCode.SHIFT)
                         view.pause();
                 }
         );
