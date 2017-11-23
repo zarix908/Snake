@@ -8,6 +8,7 @@ import lombok.val;
 import model.Direction;
 import model.Game;
 import view.View;
+import web.Client;
 
 public class Main extends Application {
     public static void main(String[] args) {
@@ -18,6 +19,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Snake game");
         val game = new Game(4);
+        val client = new Client(game);
 
         val view = new View(game, primaryStage);
         Scene theScene = new Scene(view);
@@ -45,7 +47,9 @@ public class Main extends Application {
         );
 
         primaryStage.setOnCloseRequest(
-                event -> view.closeTimer()
+                event -> {
+                    view.closeTimer();
+                }
         );
 
         primaryStage.show();

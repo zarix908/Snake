@@ -8,10 +8,20 @@ import model.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+
+import static java.lang.Math.abs;
 
 public final class Utils {
     private Utils() {
     }
+
+    @Getter
+    private final static String playerName = "Daniyar";
+
+    @Getter
+    private final static UUID id = UUID.randomUUID();
 
     @Getter
     private final static Map<Direction, Direction> oppositeDirections = new HashMap<Direction, Direction>() {{
