@@ -1,8 +1,4 @@
 package web;
-
-import model.Game;
-import utils.Utils;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -10,17 +6,22 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class Client {
-    public Client(Game game) {
-        game.addEndGameHandler(this::recordScoreToServer);
+
+    private String playerName;
+    private String id;
+
+    public void registerNewPlayer(String name){
+        playerName = name;
+        id = "abcdefuckyou";
     }
 
-    private void recordScoreToServer(int levelNumber, int snakeLength, boolean snakeIsDead) {
+    public void recordScoreToServer(int levelNumber, int snakeLength, boolean snakeIsDead) {
         try {
             String url = "http://localhost:8080/recordscore";
             String charset = "UTF-8";
-            String id = Utils.getId().toString().replace("-", "");
-            String playerName = Utils.getPlayerName();
+//            String id = Utils.getId().toString().replace("-", "");
 
+//            String playerName = Utils.getPlayerName();
             String query = String.format(url + "?playerID=%s&playerName=%s&level=%s&applesCount=%s",
                     URLEncoder.encode(id, charset),
                     URLEncoder.encode(playerName, charset),
