@@ -1,13 +1,11 @@
 package view;
 
 import javafx.animation.FadeTransition;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -16,26 +14,28 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import web.Client;
+import web.JsonParser;
 import web.Score;
 
 import java.util.ArrayList;
 
 @SuppressWarnings("Duplicates")
 public class MainMenu extends Parent{
+    private Client client;
     private Parent menuMain;
     private Parent menuStats;
     private Parent menuPlayer;
     private StackPane root;
     private Slider mainDifSlider;
     private StackPane mainPlay;
-    private StackPane pSubmit;
 
-    public MainMenu(int width, int height, ArrayList<Score> stats, String playerName){
+    public MainMenu(int width, int height, Client client){
+        this.client = client;
         root = new StackPane();
         root.setPrefSize(width, height);
         menuMain = createFirstMenu();
-        menuStats = createStatsMenu(stats);
-        menuPlayer = createPlayerMenu(playerName);
+        menuPlayer = createPlayerMenu();
 
         root.setAlignment(Pos.CENTER);
         root.getChildren().add(menuMain);
@@ -85,11 +85,17 @@ public class MainMenu extends Parent{
     }
 
     private Parent createFirstMenu(){
-        VBox root = new VBox(10);
+        VBox root = new VBox(5);
 
         mainPlay = createMenuButton("Play");
         StackPane mainStats = createMenuButton("Stats");
-        mainStats.setOnMouseClicked(event -> fromMenuToMenu(menuMain, menuStats));
+        mainStats.setOnMouseClicked(event -> {
+            //TODO do something with this bad try/catch
+            try {
+                menuStats = createStatsMenu();
+                fromMenuToMenu(menuMain, menuStats);
+            } catch (Exception e) { }
+        });
 
         Text mainDifText = new Text("Difficulty");
         mainDifText.setFill(Color.DARKGREY);
@@ -101,11 +107,17 @@ public class MainMenu extends Parent{
         mainDifSlider.setShowTickLabels(true);
         mainDifSlider.setSnapToTicks(true);
 
+        StackPane mainPlayer = createMenuButton("Player");
+        mainPlayer.setOnMouseClicked(event -> {
+            menuPlayer = createPlayerMenu();
+            fromMenuToMenu(menuMain, menuPlayer);
+        });
+
         StackPane mainExit = createMenuButton("Exit");
         mainExit.setOnMouseClicked(event -> System.exit(0));
 
         root.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(mainPlay, mainStats, mainDifText, mainDifSlider, mainExit);
+        root.getChildren().addAll(mainPlay, mainStats, mainDifText, mainDifSlider, mainPlayer, mainExit);
         return root;
     }
 
@@ -117,7 +129,8 @@ public class MainMenu extends Parent{
         return mainPlay;
     }
 
-    private Parent createStatsMenu(ArrayList<Score> stats){
+    private Parent createStatsMenu(){
+        ArrayList<Score> stats = new JsonParser().parse(client.getJsonStatistics());
         VBox root = new VBox(5);
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setStyle("-fx-background: black;");
@@ -137,7 +150,10 @@ public class MainMenu extends Parent{
         }
 
         StackPane statsBack = createMenuButton("Back");
-        statsBack.setOnMouseClicked(event -> fromMenuToMenu(menuStats, menuMain));
+        statsBack.setOnMouseClicked(event -> {
+            fromMenuToMenu(menuStats, menuMain);
+            menuStats = null;
+        });
 
         scrollPane.setContent(scrollContent);
         root.getChildren().addAll(scrollPane, statsBack);
@@ -145,16 +161,19 @@ public class MainMenu extends Parent{
     }
 
     private Parent createPlayerMenu(){
-        VBox root = new VBox(10);
-        TextField playerNameField = new TextField();
+        VBox root = new VBox(5);
+        TextField playerNameField = new TextField(client.getPlayerName());
 
-        pSubmit = createMenuButton("Select");
-        pSubmit.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> fromMenuToMenu(menuPlayer, menuMain));
+        StackPane pApply = createMenuButton("Apply");
+        pApply.setOnMouseClicked(event -> {
+            client.setPlayerName(playerNameField.getText());
+            fromMenuToMenu(menuPlayer, menuMain);
+            menuPlayer = null;
+        });
 
+        playerNameField.setAlignment(Pos.CENTER);
+        pApply.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(playerNameField, pApply);
         return root;
-    }
-
-    public StackPane getPlayerSubmit() {
-        return pSubmit;
     }
 }

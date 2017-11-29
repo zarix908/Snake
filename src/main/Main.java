@@ -18,7 +18,6 @@ import view.EndGameMenu;
 import view.GamePlay;
 import view.MainMenu;
 import web.Client;
-import web.JsonParser;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,8 +36,6 @@ public class Main extends Application {
     private Scene gameScene;
     private boolean isPaused = false;
     private Client client;
-    @Getter @Setter
-    private String playerName = "Snake";
 
     public static void main(String[] args) {
         launch(args);
@@ -59,15 +56,13 @@ public class Main extends Application {
     }
 
     private Parent createMainMenu(){
-        val stats = new JsonParser().parse(client.getJsonStatistics());
-
-        val mainMenu = new MainMenu(width, height, stats, playerName);
+        val mainMenu = new MainMenu(width, height, client);
         mainMenu.getDifficultySlider().setValue(difficulty);
         mainMenu.getDifficultySlider().valueProperty().addListener((observable, oldValue, newValue) -> {
             difficulty = newValue.intValue();
         });
         mainMenu.getMainPlay().setOnMouseClicked(e -> playGame());
-        mainMenu.getPlayerSubmit().setOnMouseClicked(event -> {});
+//        mainMenu.getPlayerApply().setOnMouseClicked(event -> {});
         return mainMenu;
     }
 
@@ -148,9 +143,11 @@ public class Main extends Application {
             pause();
         });
         endScreen.getNo().setOnMouseClicked(event -> {
-            //TODO cleanup
-
             theStage.setScene(new Scene(createMainMenu(), Color.BLACK));
+            //cleanup
+            game = null;
+            gameTimer = null;
+            animationTimer = null;
         });
     }
 

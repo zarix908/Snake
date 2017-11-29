@@ -1,4 +1,7 @@
 package web;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -7,8 +10,9 @@ import java.net.URLEncoder;
 
 public class Client {
 
-    private String playerName;
-    private String id;
+    @Getter @Setter
+    private String playerName = "Snake";
+    private String id = "abcdefuckyou";
 
     public void registerNewPlayer(String name){
         playerName = name;
