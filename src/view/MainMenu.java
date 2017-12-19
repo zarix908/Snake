@@ -1,11 +1,12 @@
 package view;
 
 import javafx.animation.FadeTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -134,20 +135,53 @@ public class MainMenu extends Parent{
         VBox root = new VBox(5);
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setStyle("-fx-background: black;");
-        VBox scrollContent = new VBox(5);
+//        VBox scrollContent = new VBox(5);
+//
+//        for (Score stat : stats) {
+//            Text text = new Text(
+//                    String.format(
+//                            "%s:\n\tLevel: %d, Apples: %d",
+//                            stat.getPlayerName(),
+//                            stat.getLevel(),
+//                            stat.getApplesCount())
+//            );
+//            text.setFill(Color.DARKGREY);
+//            text.setFont(Font.font("Calibri", FontWeight.SEMI_BOLD, 22));
+//            scrollContent.getChildren().add(text);
+//        }
 
-        for (Score stat : stats) {
-            Text text = new Text(
-                    String.format(
-                            "%s:\n\tLevel: %d, Apples: %d",
-                            stat.getPlayerName(),
-                            stat.getLevel(),
-                            stat.getApplesCount())
-            );
-            text.setFill(Color.DARKGREY);
-            text.setFont(Font.font("Calibri", FontWeight.SEMI_BOLD, 22));
-            scrollContent.getChildren().add(text);
-        }
+//        ObservableList<Stat> data = FXCollections.observableArrayList();
+//        for (Score stat: stats) {
+//            data.add(new Stat(stat.getPlayerName(), stat.getLevel(), stat.getApplesCount()));
+//        }
+        ObservableList<Stat> data =
+                FXCollections.observableArrayList(
+                        new Stat("Jacob", 1, 0),
+                        new Stat("Isabella", 1, 2),
+                        new Stat("Jacob", 3, 4),
+                        new Stat("Emma", 3, 5),
+                        new Stat("Michael", 2, 2)
+                );
+
+        TableView<Stat> table = new TableView<>();
+        table.setEditable(true);
+        TableColumn playerNameCol = new TableColumn("Player Name");
+        playerNameCol.setMinWidth(100);
+        playerNameCol.setCellValueFactory(
+                new PropertyValueFactory<Stat, String>("playerName"));
+
+        TableColumn levelCol = new TableColumn("Level");
+        levelCol.setMinWidth(100);
+        levelCol.setCellValueFactory(
+                new PropertyValueFactory<Stat, Integer>("level"));
+
+        TableColumn applesCol = new TableColumn("Apples Count");
+        applesCol.setMinWidth(200);
+        applesCol.setCellValueFactory(
+                new PropertyValueFactory<Stat, Integer>("applesCount"));
+
+        table.setItems(data);
+        table.getColumns().addAll(playerNameCol, levelCol, applesCol);
 
         StackPane statsBack = createMenuButton("Back");
         statsBack.setOnMouseClicked(event -> {
@@ -155,7 +189,8 @@ public class MainMenu extends Parent{
             menuStats = null;
         });
 
-        scrollPane.setContent(scrollContent);
+//        scrollPane.setContent(scrollContent);
+        scrollPane.setContent(table);
         root.getChildren().addAll(scrollPane, statsBack);
         return root;
     }
