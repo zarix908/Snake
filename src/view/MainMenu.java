@@ -1,25 +1,30 @@
 package view;
 
+import com.sun.javafx.text.TextLine;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import web.Client;
 import web.JsonParser;
 import web.Score;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
 public class MainMenu extends Parent{
@@ -66,20 +71,21 @@ public class MainMenu extends Parent{
 
         Rectangle bg = new Rectangle(200, 30);
         bg.setOpacity(0.4);
+        bg.setFill(Color.TRANSPARENT);
 
         Text text = new Text(name);
-        text.setFill(Color.DARKGREY);
+        text.setFill(Color.BLACK);
         text.setFont(Font.font("Calibri", FontWeight.SEMI_BOLD, 22));
 
-        root.setAlignment(Pos.CENTER);
+//        root.setAlignment(Pos.CENTER_RIGHT);
         root.getChildren().addAll(bg, text);
 
-        root.setOnMouseEntered(event -> text.setFill(Color.WHITE));
+        root.setOnMouseEntered(event -> text.setFill(Color.DARKGREEN));
         root.setOnMouseExited(event -> {
             bg.setFill(Color.TRANSPARENT);
-            text.setFill(Color.DARKGREY);
+            text.setFill(Color.BLACK);
         });
-        root.setOnMousePressed(event -> bg.setFill(Color.GREY));
+        root.setOnMousePressed(event -> bg.setFill(Color.LIGHTGREEN));
         root.setOnMouseReleased(event -> bg.setFill(Color.TRANSPARENT));
 
         return root;
@@ -99,7 +105,7 @@ public class MainMenu extends Parent{
         });
 
         Text mainDifText = new Text("Difficulty");
-        mainDifText.setFill(Color.DARKGREY);
+        mainDifText.setFill(Color.BLACK);
         mainDifText.setFont(Font.font("Calibri", FontWeight.SEMI_BOLD, 22));
         mainDifSlider = new Slider(1, 6, 1);
         mainDifSlider.setBlockIncrement(1);
@@ -131,10 +137,14 @@ public class MainMenu extends Parent{
     }
 
     private Parent createStatsMenu(){
-        ArrayList<Score> stats = new JsonParser().parse(client.getJsonStatistics());
+//        ArrayList<Score> stats = new JsonParser().parse(client.getJsonStatistics());
         VBox root = new VBox(5);
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setStyle("-fx-background: black;");
+
+//        ScrollPane scrollPane = new ScrollPane();
+
+        VBox scrollPane = new VBox();
+
+//        scrollPane.setStyle("-fx-background: black;");
 //        VBox scrollContent = new VBox(5);
 //
 //        for (Score stat : stats) {
@@ -154,34 +164,70 @@ public class MainMenu extends Parent{
 //        for (Score stat: stats) {
 //            data.add(new Stat(stat.getPlayerName(), stat.getLevel(), stat.getApplesCount()));
 //        }
+
+
         ObservableList<Stat> data =
                 FXCollections.observableArrayList(
                         new Stat("Jacob", 1, 0),
                         new Stat("Isabella", 1, 2),
                         new Stat("Jacob", 3, 4),
+                        new Stat("Jacob", 3, 4),
+                        new Stat("Jacob", 3, 4),
+                        new Stat("Jacob", 3, 4),
+                        new Stat("Jacob", 3, 4),
+                        new Stat("Jacob", 3, 4),
+                        new Stat("Jacob", 3, 4),
                         new Stat("Emma", 3, 5),
                         new Stat("Michael", 2, 2)
                 );
 
+//        data.stream().filter()
+
         TableView<Stat> table = new TableView<>();
-        table.setEditable(true);
-        TableColumn playerNameCol = new TableColumn("Player Name");
-        playerNameCol.setMinWidth(100);
-        playerNameCol.setCellValueFactory(
-                new PropertyValueFactory<Stat, String>("playerName"));
+        table.setEditable(false);
+        setUpTable(table, data);
 
-        TableColumn levelCol = new TableColumn("Level");
-        levelCol.setMinWidth(100);
-        levelCol.setCellValueFactory(
-                new PropertyValueFactory<Stat, Integer>("level"));
+        table.setOnMousePressed(event -> {
+            if (event.getClickCount() == 2 && event.isPrimaryButtonDown()){
+                Stat stat = table.getSelectionModel().getSelectedItem();
+                Stage stage = new Stage();
+                TableView<Stat> t = new TableView<>();
+                t.setEditable(false);
+                ObservableList<Stat> l = FXCollections.observableArrayList(data.stream()
+                        .filter(d -> d.getPlayerName().equals(stat.getPlayerName()))
+                        .collect(Collectors.toList()));
+                setUpTable(t, l);
+                t.setPrefSize(400,200);
+                stage.setScene(new Scene(t));
+                stage.setTitle(String.format("Results of player: %s", stat.getPlayerName()));
+                stage.setResizable(false);
+                stage.show();
+            }
+        });
 
-        TableColumn applesCol = new TableColumn("Apples Count");
-        applesCol.setMinWidth(200);
-        applesCol.setCellValueFactory(
-                new PropertyValueFactory<Stat, Integer>("applesCount"));
-
-        table.setItems(data);
-        table.getColumns().addAll(playerNameCol, levelCol, applesCol);
+        GridPane grid = new GridPane();
+        TextField line = new TextField("Find player");
+//        line.setAlignment(Pos.CENTER_RIGHT);
+        StackPane statsFind = createMenuButton("Find");
+//        statsFind.setAlignment(Pos.CENTER_RIGHT);
+        statsFind.setOnMouseClicked(event -> {
+            ObservableList<Stat> l = FXCollections.observableArrayList(data.stream()
+                    .filter(d -> d.getPlayerName().equals(line.getText()))
+                    .collect(Collectors.toList()));
+            if (l.isEmpty()) return;
+            Stage stage = new Stage();
+            TableView<Stat> t = new TableView<>();
+            t.setEditable(false);
+            setUpTable(t, l);
+            t.setPrefSize(400,200);
+            stage.setScene(new Scene(t));
+            stage.setTitle(String.format("Results of player: %s", line.getText()));
+            stage.setResizable(false);
+            stage.show();
+        });
+//        grid.getChildren().addAll(line, statsFind);
+        grid.add(line, 0, 0, 3, 1);
+        grid.add(statsFind, 3, 0, 1, 1);
 
         StackPane statsBack = createMenuButton("Back");
         statsBack.setOnMouseClicked(event -> {
@@ -190,9 +236,36 @@ public class MainMenu extends Parent{
         });
 
 //        scrollPane.setContent(scrollContent);
-        scrollPane.setContent(table);
-        root.getChildren().addAll(scrollPane, statsBack);
+//        scrollPane.setContent(table);
+        scrollPane.getChildren().add(table);
+        root.getChildren().addAll(scrollPane, grid, statsBack);
         return root;
+    }
+
+    private void setUpTable(TableView<Stat> table, ObservableList<Stat> data) {
+        TableColumn playerNameCol = new TableColumn("Player Name");
+        playerNameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.5));
+        playerNameCol.maxWidthProperty().bind(playerNameCol.prefWidthProperty());
+        playerNameCol.minWidthProperty().bind(playerNameCol.prefWidthProperty());
+        playerNameCol.setCellValueFactory(
+                new PropertyValueFactory<Stat, String>("playerName"));
+
+        TableColumn levelCol = new TableColumn("Level");
+        levelCol.prefWidthProperty().bind(table.widthProperty().multiply(0.23));
+        levelCol.maxWidthProperty().bind(levelCol.prefWidthProperty());
+        levelCol.minWidthProperty().bind(levelCol.prefWidthProperty());
+        levelCol.setCellValueFactory(
+                new PropertyValueFactory<Stat, Integer>("level"));
+
+        TableColumn applesCol = new TableColumn("Apples Count");
+        applesCol.prefWidthProperty().bind(table.widthProperty().multiply(0.24));
+        applesCol.maxWidthProperty().bind(applesCol.prefWidthProperty());
+        applesCol.minWidthProperty().bind(applesCol.prefWidthProperty());
+        applesCol.setCellValueFactory(
+                new PropertyValueFactory<Stat, Integer>("applesCount"));
+
+        table.setItems(data);
+        table.getColumns().addAll(playerNameCol, levelCol, applesCol);
     }
 
     private Parent createPlayerMenu(){

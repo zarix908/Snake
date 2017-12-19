@@ -51,7 +51,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 
         theStage = primaryStage;
-        theStage.setScene(new Scene(createMainMenu(), Color.BLACK));
+        theStage.setScene(new Scene(createMainMenu(), Color.WHITESMOKE));
         theStage.show();
     }
 
@@ -135,7 +135,7 @@ public class Main extends Application {
         animationTimer.stop();
         val endScreen = new EndGameMenu(width, height);
         endScreen.onEndGame(levelNumber, snakeLength, snakeIsDead);
-        theStage.setScene(new Scene(endScreen, Color.BLACK));
+        theStage.setScene(new Scene(endScreen, Color.WHITESMOKE));
         endScreen.getYes().setOnMouseClicked(event -> {
             refreshGame(!snakeIsDead);
             theStage.setScene(gameScene);
@@ -143,7 +143,7 @@ public class Main extends Application {
             pause();
         });
         endScreen.getNo().setOnMouseClicked(event -> {
-            theStage.setScene(new Scene(createMainMenu(), Color.BLACK));
+            theStage.setScene(new Scene(createMainMenu(), Color.WHITESMOKE));
             //cleanup
             game = null;
             gameTimer = null;

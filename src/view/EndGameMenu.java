@@ -34,20 +34,21 @@ public class EndGameMenu extends Parent {
 
         Rectangle bg = new Rectangle(200, 30);
         bg.setOpacity(0.4);
+        bg.setFill(Color.TRANSPARENT);
 
         Text text = new Text(name);
-        text.setFill(Color.DARKGREY);
+        text.setFill(Color.BLACK);
         text.setFont(Font.font("Calibri", FontWeight.SEMI_BOLD, 22));
 
         root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(bg, text);
 
-        root.setOnMouseEntered(event -> text.setFill(Color.WHITE));
+        root.setOnMouseEntered(event -> text.setFill(Color.DARKGREEN));
         root.setOnMouseExited(event -> {
             bg.setFill(Color.TRANSPARENT);
-            text.setFill(Color.DARKGREY);
+            text.setFill(Color.BLACK);
         });
-        root.setOnMousePressed(event -> bg.setFill(Color.GREY));
+        root.setOnMousePressed(event -> bg.setFill(Color.LIGHTGREEN));
         root.setOnMouseReleased(event -> bg.setFill(Color.TRANSPARENT));
 
         return root;
@@ -56,11 +57,11 @@ public class EndGameMenu extends Parent {
     private Parent createFirstMenu() {
         VBox root = new VBox(10);
         results = new Text();
-        results.setFill(Color.DARKGREY);
+        results.setFill(Color.BLACK);
         results.setFont(Font.font("Calibri", FontWeight.SEMI_BOLD, 22));
         results.setTextAlignment(TextAlignment.CENTER);
         Text tryAgain = new Text("Do you want to try again?");
-        tryAgain.setFill(Color.DARKGREY);
+        tryAgain.setFill(Color.BLACK);
         tryAgain.setFont(Font.font("Calibri", FontWeight.SEMI_BOLD, 22));
         HBox yesNo = new HBox(15);
         yes = createMenuButton("Yes");
