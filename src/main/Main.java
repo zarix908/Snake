@@ -69,17 +69,25 @@ public class Main extends Application {
     private void initGameplayScene(){
         gameScene = new Scene(gameplayScreen, Color.BLACK);
         gameScene.setOnKeyPressed(e -> {
-            val snake = game.getCurrentLevel().getSnakeHead();
+            val snake = game.getCurrentLevel().getSnakeHeads();
             if (isPaused)
                 resume();
             if (e.getCode() == KeyCode.RIGHT)
-                snake.rotate(Direction.RIGHT);
+                snake.get(0).rotate(Direction.RIGHT);
             else if (e.getCode() == KeyCode.LEFT)
-                snake.rotate(Direction.LEFT);
+                snake.get(0).rotate(Direction.LEFT);
             else if (e.getCode() == KeyCode.UP)
-                snake.rotate(Direction.UP);
+                snake.get(0).rotate(Direction.UP);
             else if (e.getCode() == KeyCode.DOWN)
-                snake.rotate(Direction.DOWN);
+                snake.get(0).rotate(Direction.DOWN);
+            else if (e.getCode() == KeyCode.D)
+                snake.get(1).rotate(Direction.RIGHT);
+            else if (e.getCode() == KeyCode.A)
+                snake.get(1).rotate(Direction.LEFT);
+            else if (e.getCode() == KeyCode.W)
+                snake.get(1).rotate(Direction.UP);
+            else if (e.getCode() == KeyCode.S)
+                snake.get(1).rotate(Direction.DOWN);
             else if (e.getCode() == KeyCode.SHIFT){
                 pause();
             }});
@@ -104,7 +112,8 @@ public class Main extends Application {
 
         game.addEndGameHandler(this::onEndGame);
         game.addChangeLevelHandler(this::onLevelChanged);
-        game.getCurrentLevel().getSnakeHead().addThrewBackTailHandler(this::pause);
+//        game.getCurrentLevel().getSnakeHead().addThrewBackTailHandler(this::pause);
+        game.getCurrentLevel().getSnakeHeads().forEach(snakeHead -> snakeHead.addThrewBackTailHandler(this::pause));
         initGameplayScene();
         theStage.setScene(gameScene);
     }
@@ -153,12 +162,14 @@ public class Main extends Application {
 
     private void onLevelChanged(int level) {
         resizeField();
-        game.getCurrentLevel().getSnakeHead().addThrewBackTailHandler(this::pause);
+//        game.getCurrentLevel().getSnakeHead().addThrewBackTailHandler(this::pause);
+        game.getCurrentLevel().getSnakeHeads().forEach(snakeHead -> snakeHead.addThrewBackTailHandler(this::pause));
     }
 
     private void refreshGame(boolean startOver){
         game.refreshGame(startOver);
-        game.getCurrentLevel().getSnakeHead().addThrewBackTailHandler(this::pause);
+//        game.getCurrentLevel().getSnakeHead().addThrewBackTailHandler(this::pause);
+        game.getCurrentLevel().getSnakeHeads().forEach(snakeHead -> snakeHead.addThrewBackTailHandler(this::pause));
 
         gameTimer = new Timer();
         gameTimer.schedule(new TimerTask() {

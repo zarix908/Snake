@@ -53,6 +53,7 @@ public class SnakeHead extends SnakePart {
         movementHandlers.put(Wall.class, this::moveToWall);
         movementHandlers.put(Apple.class, this::moveToApple);
         movementHandlers.put(SnakeBodyPart.class, this::moveToSnakeBodyPart);
+        movementHandlers.put(SnakeHead.class, this::moveToSnakeBodyPart);
         movementHandlers.put(Space.class, this::moveToSpace);
         movementHandlers.put(Mushroom.class, this::moveToMushroom);
     }
@@ -76,7 +77,7 @@ public class SnakeHead extends SnakePart {
     }
 
     private void tryDie() {
-        val lenhgth = getLength();
+        val length = getLength();
         while (body.size() > 1) {
             val bodyPart = body.pollFirst();
             map.add(bodyPart.location, new Space(map, bodyPart.location));
@@ -85,7 +86,7 @@ public class SnakeHead extends SnakePart {
                 return;
             }
         }
-        notifyDeath(lenhgth);
+        notifyDeath(length);
     }
 
     public int getLength() {

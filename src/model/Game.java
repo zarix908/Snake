@@ -6,12 +6,13 @@ import utils.Config;
 import utils.Point;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Game {
     @Getter
     private int iteration;
-    private final ArrayList<Level> levels;
+    private final List<Level> levels;
     @Getter
     private Level currentLevel;
     @Getter
@@ -48,7 +49,7 @@ public class Game {
         addAppleToMap();
     }
 
-    public Game(ArrayList<Level> levels, int difficult) {
+    public Game(List<Level> levels, int difficult) {
         this.levels = levels;
         this.levels.forEach(this::subscribeToEvents);
         currentLevel = levels.get(0);
@@ -61,15 +62,19 @@ public class Game {
     }
 
     public void makeGameIteration() {
-        currentLevel.getSnakeHead().move();
-        if (currentLevel.getSnakeHead().getLength() > currentLevel.getAppleCount())
-            switchToNextLevel();
+//        currentLevel.getSnakeHeads().forEach(SnakeHead::move);
+//        if (currentLevel.getSnakeHead().getLength() > currentLevel.getAppleCount())
+//                switchToNextLevel();
+        currentLevel.getSnakeHeads().forEach(snakeHead -> {
+            snakeHead.move();
+            if (snakeHead.getLength() > currentLevel.getAppleCount())
+                switchToNextLevel();
+        });
 
         if (iteration % Config.MUSHROOM_ITERATION_PERIOD == 0) {
             addMushroomToMap();
             iteration++;
         }
-
     }
 
     private void addAppleToMap() {
@@ -106,9 +111,13 @@ public class Game {
     }
 
     private void subscribeToEvents(Level level) {
-        level.getSnakeHead()
-                .addDeathHandler(l -> notifyEndGame(currentLevelNumber + 1, l, true));
-        level.getSnakeHead().addEatAppleHandler(this::addAppleToMap);
+//        level.getSnakeHead()
+//                .addDeathHandler(l -> notifyEndGame(currentLevelNumber + 1, l, true));
+//        level.getSnakeHead().addEatAppleHandler(this::addAppleToMap);
+        level.getSnakeHeads().forEach(snakeHead -> {
+            snakeHead.addDeathHandler(l -> notifyEndGame(currentLevelNumber + 1, l, true));
+            snakeHead.addEatAppleHandler(this::addAppleToMap);
+        });
     }
 
     private void switchToNextLevel() {

@@ -7,6 +7,9 @@ import utils.Point;
 import utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class LevelGenerator {
     private static ArrayList<String> levels = new ArrayList<>();
@@ -14,10 +17,10 @@ public final class LevelGenerator {
     static {
         levels.add(
                 "xxxxxxxxxxxxxxxxx\n" +
-                        "x.....x.........x\n" +
-                        "x.....x.........x\n" +
+                        "x.o...x.........x\n" +
+                        "x.s...x.........x\n" +
                         "x.....xxxx..x...x\n" +
-                            "x...........x...x\n" +
+                        "x...........x...x\n" +
                         "x.s...x.....x...x\n" +
                         "x.o...x.....x...x\n" +
                         "xxxxxxxxxxxxxxxxx"
@@ -94,8 +97,8 @@ public final class LevelGenerator {
                     throw new IllegalArgumentException();
             }
         }
-        if (snakeBodyCount != 1 || snakeHeadCount != 1)
-            throw new IllegalArgumentException();
+//        if (snakeBodyCount != 1 || snakeHeadCount != 1)
+//            throw new IllegalArgumentException();
         portalManager.connectPortals();
         return result;
     }
@@ -109,14 +112,25 @@ public final class LevelGenerator {
 
     public static Level getLevel(int number) {
         val map = parseLevel(levels.get(number));
-        val snake = (SnakeHead) map.findFirst(SnakeHead.class);
-        val snakeBody = (SnakeBodyPart) map.findFirst(SnakeBodyPart.class);
+//        val snake = (SnakeHead) map.findFirst(SnakeHead.class);
+//        val snakeBody = (SnakeBodyPart) map.findFirst(SnakeBodyPart.class);
 
-        if (!snake.isNeighbor(snakeBody))
-            throw new IllegalArgumentException();
+//        if (!snake.isNeighbor(snakeBody))
+//            throw new IllegalArgumentException();
+//
+//        snake.getBody().add(snakeBody);
+//        return new Level(map, snake, Config.getApplesCount(number));
 
-        snake.getBody().add(snakeBody);
-        return new Level(map, snake, Config.getApplesCount(number));
+        val snakes = map.findAll(SnakeHead.class).map(e -> (SnakeHead) e).collect(Collectors.toList());
+        val snakeBodies = map.findAll(SnakeBodyPart.class).map(e -> (SnakeBodyPart) e).collect(Collectors.toList());
+        val i = 0;
+        snakes.forEach(snakeHead -> snakeBodies.forEach(
+                snakeBodyPart -> {
+                    if (snakeHead.isNeighbor(snakeBodyPart))
+                        snakeHead.getBody().add(snakeBodyPart);
+                })
+        );
+        return new Level(map, snakes, Config.getApplesCount(number));
     }
 
     private LevelGenerator() {

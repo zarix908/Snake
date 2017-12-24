@@ -37,39 +37,43 @@ class TextureGetter {
     }
 
     private void fillDynamicTextures(Game game) {
-        val snakeHead = game.getCurrentLevel().getSnakeHead();
-        val snakeBody = snakeHead.getBody();
-        val lastSnakeBodyPart = snakeBody.getLast();
+        game.getCurrentLevel().getSnakeHeads().forEach(head -> {
+//            val snakeHead = game.getCurrentLevel().getSnakeHead();
+            val snakeHead = head;
+            val snakeBody = snakeHead.getBody();
+            val lastSnakeBodyPart = snakeBody.getLast();
 
-        //HEAD
-        dynamicTextures.put(snakeHead, getRotatedImage("Head", false, snakeHead.getDirection(),
-                snakeHead.getDirectionTo(lastSnakeBodyPart)));
+            //HEAD
+            dynamicTextures.put(snakeHead, getRotatedImage("Head", false, snakeHead.getDirection(),
+                    snakeHead.getDirectionTo(lastSnakeBodyPart)));
 
 
-        //BODY
-        val body = "Body";
+            //BODY
+            val body = "Body";
 
-        if (snakeBody.size() > 1)
-            dynamicTextures.put(lastSnakeBodyPart, getRotatedImage(body, lastSnakeBodyPart.isSafePart(),
-                    lastSnakeBodyPart.getDirectionTo(snakeHead),
-                    lastSnakeBodyPart.getDirectionTo(snakeBody.get(snakeBody.size() - 2))));
+            if (snakeBody.size() > 1)
+                dynamicTextures.put(lastSnakeBodyPart, getRotatedImage(body, lastSnakeBodyPart.isSafePart(),
+                        lastSnakeBodyPart.getDirectionTo(snakeHead),
+                        lastSnakeBodyPart.getDirectionTo(snakeBody.get(snakeBody.size() - 2))));
 
-        for (int i = snakeBody.size() - 2; i >= 1; i--) {
-            val previousPart = snakeBody.get(i + 1);
-            val nextPart = snakeBody.get(i - 1);
+            for (int i = snakeBody.size() - 2; i >= 1; i--) {
+                val previousPart = snakeBody.get(i + 1);
+                val nextPart = snakeBody.get(i - 1);
 
-            val directionToPreviousPart = snakeBody.get(i).getDirectionTo(previousPart);
-            val directionToNextPart = snakeBody.get(i).getDirectionTo(nextPart);
+                val directionToPreviousPart = snakeBody.get(i).getDirectionTo(previousPart);
+                val directionToNextPart = snakeBody.get(i).getDirectionTo(nextPart);
 
-            dynamicTextures.put(snakeBody.get(i),
-                    getRotatedImage(body, snakeBody.get(i).isSafePart(), directionToPreviousPart, directionToNextPart));
-        }
+                dynamicTextures.put(snakeBody.get(i),
+                        getRotatedImage(body, snakeBody.get(i).isSafePart(), directionToPreviousPart, directionToNextPart));
+            }
 
-        //TAIL
-        dynamicTextures.put(snakeBody.getFirst(), getRotatedImage("Tail", snakeBody.getFirst().isSafePart(),
-                snakeBody.getFirst().getDirectionTo(
-                snakeBody.size() > 1 ? snakeBody.get(1) : snakeHead
-        ), null));
+            //TAIL
+            dynamicTextures.put(snakeBody.getFirst(), getRotatedImage("Tail", snakeBody.getFirst().isSafePart(),
+                    snakeBody.getFirst().getDirectionTo(
+                            snakeBody.size() > 1 ? snakeBody.get(1) : snakeHead
+                    ), null));
+        });
+
     }
 
     private Image getRotatedImage(String bodyPartsVarieties, boolean isSafeBodyPart,

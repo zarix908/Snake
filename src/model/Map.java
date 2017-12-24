@@ -5,6 +5,8 @@ import lombok.val;
 import utils.Point;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Map {
@@ -43,6 +45,13 @@ public class Map {
                 .filter(e -> e.getClass() == cls)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Stream<GameObject> findAll(Class cls){
+        return Arrays.stream(map)
+                .flatMap(Arrays::stream)
+                .filter(e -> e.getClass() == cls);
+//                .collect(Collectors.toList());
     }
 
     public Stream<GameObject> toStream(){
